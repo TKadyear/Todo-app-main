@@ -1,0 +1,122 @@
+.attribution { font-size: 11px; text-align: center; }
+.attribution a { color: hsl(228, 45%, 44%); }
+
+*{
+    box-sizing: border-box;
+    font-family: 'Josefin Sans', sans-serif;
+}
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap');
+body{
+    margin: 0px 0px;
+}
+/*Reset elements of the input*/
+input{
+    border:none;
+    background-image:none;
+    background-color:transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+    width: -webkit-fill-available;
+}
+input:focus-visible{
+    outline: none;
+}
+
+nav{
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+nav>img{
+    cursor:pointer;
+}
+h1{
+    cursor: default;
+    font-weight: bold;
+    font-size:2.5em;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.3em;
+}
+
+.container{
+    background: url(../images/bg-desktop-light.jpg) hsl(0, 0%, 98%);
+    background-repeat: no-repeat;
+    height: 100vh;
+}
+.content{
+    padding-top: 10vh;
+    width: 50%;
+    margin: 0 auto;
+}
+
+.checkbox,.circle{
+    border: 1.5px solid blue ;
+    background-clip: padding-box;
+    border-radius: 20px;
+    transition: 2s;
+    cursor: pointer;
+    background-color: none;
+    margin: 0px 10px;
+    
+    padding: 5px;
+}
+.checkbox:hover{
+    border: 1.5px solid transparent ;
+    border-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);
+    border-image-slice: 1;
+    
+}
+.task{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    cursor: grab;
+}
+
+/*Styles for the light mode*/
+
+.day-list {
+    background: rgb(255, 255, 255);
+    margin: 1.5em auto;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 6px 16px -2px  hsl(236, 9%, 61%); 
+    box-shadow: 0px 6px 16px -2px  hsl(236, 9%, 61%);
+}
+.day-text-input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: rgb(255, 255, 255);
+    padding: 15px 0;
+    border-radius: 5px;  
+}
+
+.day-separador{
+    border-bottom: 1px solid hsl(0, 0%, 98%);
+}
+/*Style for dark-mode*/
+.night-list {
+    background: hsl(235, 24%, 19%);
+    margin: 1.5em auto;
+    border-radius: 5px;
+    -webkit-box-shadow: 0px 6px 16px -2px  hsl(235, 21%, 11%); 
+    box-shadow: 0px 6px 16px -2px  hsl(235, 21%, 11%);
+}
+.night-text-input{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: hsl(235, 24%, 19%);
+    padding: 15px 0;
+    border-radius: 5px;  
+}
+
+.night-separador{
+    border-bottom: 1px solid hsl(234, 11%, 52%);
+}
