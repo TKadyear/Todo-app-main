@@ -1,19 +1,15 @@
 //Toggle for dark mode
 let buttonMode = document.querySelector('nav>img')
-
+let darkMode = false;
 buttonMode.addEventListener('click',function(){
     document.body.classList.toggle('dark-mode')
-    buttonMode.src ="./images/icon-sun.svg"
-   
-    
-    /*
-    document.querySelector('.list').classList.toggle('dark-list');
-    document.querySelector('.text-input').classList.toggle('dark-text-input');
-    //Revisar classlist
-    document.getElementsByClassName('.separador').classList.toggle('dark-separador');
-    document.getElementsByTagName('p').classList.toggle('dark-p')*/
-        
-    
+    if(darkMode === true){
+        darkMode = false;
+        buttonMode.src ="./images/icon-moon.svg";
+    }else if(darkMode ===false){
+        darkMode= true;
+        buttonMode.src ="./images/icon-sun.svg";
+    }   
 })
 //Dynamic number for items left
 function itemsLeft(){
