@@ -20,16 +20,16 @@ itemsLeft()
 
 let todo = document.querySelector('.list'); 
 let input = document.getElementById('todo');
+//The input which add new task to the list 
 
 input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
         let task = input.value;
-        //Hay que sacar esta parte para funcion
+        //Take it out this part to make a function
         let content = document.createElement('div')
         content.className = 'task'
-        let sep = document.createElement('div')
-        //Hay que poner un condicional para saber si es el primer task o no para poder poner un separador al principio por orden
-        sep.className = 'separador'
+        let divider = document.createElement('div')
+        divider.className = 'divider'
         let checkbox = document.createElement('div')
         checkbox.className = 'checkbox'
         let item = document.createElement('p');
@@ -37,7 +37,7 @@ input.addEventListener('keypress',function(e){
         input.value = '';
         content.appendChild(checkbox);
         content.appendChild(item);
-        todo.insertBefore(sep,todo.firstElementChild);
+        todo.insertBefore(divider,todo.firstElementChild);
         todo.insertBefore(content,todo.firstElementChild);  
     }
     itemsLeft()
