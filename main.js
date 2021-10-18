@@ -13,32 +13,38 @@ buttonMode.addEventListener('click',function(){
 })
 //Dynamic number for items left
 function itemsLeft(){
-    let itemsLeft = document.querySelectorAll('.checkbox').length - document.querySelectorAll('.ok-checkbox').length;
+    let undoneTask = document.querySelectorAll('.checkbox').length;
+    let taskDone = document.querySelectorAll('.ok-checkbox').length;
+    //The next line, It's temporarily because if taskdone > undonetask will be a negative number 
+    let itemsLeft = undoneTask - taskDone;
     document.querySelector('#itemsLeft').innerHTML= `${itemsLeft} items left`;
 }
 itemsLeft()
+//Function for create new tasks
+function newTask(data){
+    let content = document.createElement('div')
+    content.className = 'task'
+    let divider = document.createElement('div')
+    divider.className = 'divider'
+    let checkbox = document.createElement('div')
+    checkbox.className = 'checkbox'
+    let item = document.createElement('p');
+    item.textContent = data;
+    content.appendChild(checkbox);
+    content.appendChild(item);
+    todo.insertBefore(divider,todo.firstElementChild);
+    todo.insertBefore(content,todo.firstElementChild);
+}
 
 let todo = document.querySelector('.list'); 
 let input = document.getElementById('todo');
-//The input which add new task to the list 
 
+//The input which add new task to the list 
 input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
         let task = input.value;
-        //Take it out this part to make a function
-        let content = document.createElement('div')
-        content.className = 'task'
-        let divider = document.createElement('div')
-        divider.className = 'divider'
-        let checkbox = document.createElement('div')
-        checkbox.className = 'checkbox'
-        let item = document.createElement('p');
-        item.textContent = task;
-        input.value = '';
-        content.appendChild(checkbox);
-        content.appendChild(item);
-        todo.insertBefore(divider,todo.firstElementChild);
-        todo.insertBefore(content,todo.firstElementChild);  
+        newTask(task)
+        input.value = '';    
     }
     itemsLeft()
 })
