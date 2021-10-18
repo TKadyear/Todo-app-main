@@ -1,42 +1,39 @@
-//How to know what mode is active
-let darkMode= false;
-
+//Toggle for dark mode
 let buttonMode = document.querySelector('nav>img')
 
 buttonMode.addEventListener('click',function(){
-    if(darkMode ===false){
-        darkMode = true;
-        buttonMode.src ="./images/icon-sun.svg"
-        document.querySelector('.day-list').className = 'night-list';
-        document.querySelector('.day-text-input').className = 'night-text-input';
+    document.body.classList.toggle('dark-mode')
+    buttonMode.src ="./images/icon-sun.svg"
+   
+    
+    /*
+    document.querySelector('.list').classList.toggle('dark-list');
+    document.querySelector('.text-input').classList.toggle('dark-text-input');
+    //Revisar classlist
+    document.getElementsByClassName('.separador').classList.toggle('dark-separador');
+    document.getElementsByTagName('p').classList.toggle('dark-p')*/
         
-    }else if(darkMode === true){
-        darkMode = false;
-        buttonMode.src ="./images/icon-moon.svg"
-        document.querySelector('.night-list').className = 'day-list';
-        document.querySelector('.night-text-input').className = 'day-text-input';
-    }
+    
 })
-function lightOrDark(){
-    if(darkMode === false){
-        return 'day'
-    }
-    return 'night'
+//Dynamic number for items left
+function itemsLeft(){
+    let itemsLeft = document.querySelectorAll('.checkbox').length - document.querySelectorAll('.ok-checkbox').length;
+    document.querySelector('#itemsLeft').innerHTML= `${itemsLeft} items left`;
 }
-let todo = document.querySelector('.day-list'); 
+itemsLeft()
+
+let todo = document.querySelector('.list'); 
 let input = document.getElementById('todo');
-let numOfTask = 0;
 
 input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
-        numOfTask++;
         let task = input.value;
+        //Hay que sacar esta parte para funcion
         let content = document.createElement('div')
-        //Same as the next line
         content.className = 'task'
-        /*let sep = document.createElement('div')
+        let sep = document.createElement('div')
         //Hay que poner un condicional para saber si es el primer task o no para poder poner un separador al principio por orden
-        sep.className = lightOrDark() +'-separador'*/
+        sep.className = 'separador'
         let checkbox = document.createElement('div')
         checkbox.className = 'checkbox'
         let item = document.createElement('p');
@@ -44,24 +41,51 @@ input.addEventListener('keypress',function(e){
         input.value = '';
         content.appendChild(checkbox);
         content.appendChild(item);
-        todo.appendChild(content);
-        //todo.appendChild(sep);
+        todo.insertBefore(sep,todo.firstElementChild);
+        todo.insertBefore(content,todo.firstElementChild);  
     }
+    itemsLeft()
 })
-let verificar = new Promise((resolve,reject) => {
-    resolve()
+//Checkbox
+let checkbox = document.querySelectorAll('.checkbox')
+checkbox.forEach(box =>{
+    box.addEventListener('click',function(e){
+        box.classList.toggle('ok-checkbox')
+        itemsLeft()
+    })
+})
+//Drag and drop
+//https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
+let allTask = document.querySelectorAll('.task>p')
+allTask.forEach(task =>{
+    task.addEventListener('dragenter', dragEnter)
+    task.addEventListener('dragover', dragOver);
+    task.addEventListener('dragleave', dragLeave);
+    task.addEventListener('drop', drop);
+})
+function dragEnter(e) {
 
-})
-let stateOfCheckbox = document.getElementsByClassName('checkbox')[0]
-stateOfCheckbox.addEventListener('click',function(){
-    let done = false;
-    if(done === false){
-        stateOfCheckbox.style.background= 'aqua';
-        stateOfCheckbox.style.border= 'none';
-        done = true;
-    }else if(done === true){
-        stateOfCheckbox.style.background= 'none';
-        stateOfCheckbox.style.border= '1.5px solid rgb(192,88,243)';
-        done = false;
-    }
-})
+    e.target.classList.add('drag-over');
+}
+
+function dragOver(e) {
+    e.preventDefault();
+    e.target.classList.add('drag-over');
+}
+
+function dragLeave(e) {
+    e.target.classList.remove('drag-over');
+}
+
+function drop(e) {
+    e.target.classList.remove('drag-over');
+    
+    const id = e.dataTransfer.getData('text/plain');
+    const draggable = document.getElementById(id);
+
+    // add it to the drop target
+    e.target.appendChild(draggable);
+
+    // display the draggable element
+    draggable.classList.remove('hide');
+}
