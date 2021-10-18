@@ -72,6 +72,7 @@ h1{
 }
 .task{
     display: flex;
+    position: relative;
     flex-direction: row;
     align-items: center;
     justify-content: flex-start;
@@ -95,9 +96,13 @@ h1{
     padding: 15px 0;
     border-radius: 5px;  
 }
-
-.divider{
-    border-bottom: 1px solid hsl(233, 11%, 84%);
+.task::after{
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    bottom: 0;
+    background: hsl(233, 11%, 84%);
 }
 .tools,.tools>div {
     display: flex;
@@ -106,11 +111,19 @@ h1{
     align-items: baseline;
 }
 .tools p {
+    color: hsl(236, 9%, 61%);
     padding: 0 10px;
     cursor: pointer;
 }
 #itemsLeft{
     cursor: default;
+}
+
+.pages > p:hover,p#clear:hover{
+    color: hsl(235, 19%, 35%);
+}
+body .active, body.dark-mode .tools div .active{
+    color: dodgerblue;
 }
 .attribution{
     display: flex;
@@ -133,7 +146,7 @@ h1{
     background-size: contain;
 }
 body.dark-mode p{
-    color:hsl(234, 39%, 85%);
+    color:hsl(236, 33%, 92%);
 }
 body.dark-mode .list {
     background: hsl(235, 24%, 19%);
@@ -151,9 +164,23 @@ body.dark-mode .text-input{
     padding: 15px 0;
     border-radius: 5px;  
 }
+body.dark-mode .tools p {
+    color: hsl(235, 19%, 35%);
+    padding: 0 10px;
+    cursor: pointer;
+}
 
-body.dark-mode .divider{
-    border-bottom: 1px solid hsl(233, 14%, 35%);
+body.dark-mode .pages > p:hover, body.dark-mode p#clear:hover{
+    color: hsl(236, 33%, 92%);
+}
+
+body.dark-mode .task::after{
+    content: '';
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    bottom: 0;
+    background: hsl(0, 0%, 62%);
 }
 .drag-over {
     background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);;

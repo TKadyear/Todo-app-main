@@ -11,6 +11,8 @@ buttonMode.addEventListener('click',function(){
         buttonMode.src ="./images/icon-sun.svg";
     }   
 })
+//Local Storage for the tasks if you want reload the website
+
 //Dynamic number for items left
 function itemsLeft(){
     let undoneTask = document.querySelectorAll('.checkbox').length;
@@ -21,40 +23,54 @@ function itemsLeft(){
 }
 itemsLeft()
 //Function for create new tasks
+let todo = document.querySelector('.list'); 
+let input = document.getElementById('todo');
+
 function newTask(data){
-    let content = document.createElement('div')
-    content.className = 'task'
-    let divider = document.createElement('div')
-    divider.className = 'divider'
-    let checkbox = document.createElement('div')
-    checkbox.className = 'checkbox'
+    let content = document.createElement('div');
+    content.className = 'task';
+    let checkbox = document.createElement('div');
+    checkbox.className = 'checkbox';
     let item = document.createElement('p');
     item.textContent = data;
     content.appendChild(checkbox);
     content.appendChild(item);
-    todo.insertBefore(divider,todo.firstElementChild);
     todo.insertBefore(content,todo.firstElementChild);
 }
-
-let todo = document.querySelector('.list'); 
-let input = document.getElementById('todo');
-
 //The input which add new task to the list 
 input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
         let task = input.value;
-        newTask(task)
-        input.value = '';    
+        newTask(task);
+        input.value = '';   
     }
     itemsLeft()
 })
+
+
 //Checkbox
 let checkbox = document.querySelectorAll('.checkbox')
 checkbox.forEach(box =>{
-    box.addEventListener('click',function(e){
+    box.addEventListener('click',function(){
         box.classList.toggle('ok-checkbox')
         itemsLeft()
     })
+})
+//Navigation for All task, active and completed
+/*let pages = document.querySelectorAll('.pages>p')
+pages.forEach(page =>{
+    page.addEventListener('click',function(){
+        console.log(page)
+
+        page.classList.toggle('active')
+    })
+})*/
+
+//Button for Clear completed task
+let clearCompleted = document.getElementById('clear')
+clearCompleted.addEventListener('click',function(){
+    let taskCompleted = document.querySelectorAll('.ok-checkbox')
+    taskCompleted.forEach(taskDone => taskDone.parentNode.parentNode.removeChild(taskDone.parentNode))
 })
 //Drag and drop
 //https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
