@@ -12,12 +12,17 @@ buttonMode.addEventListener('click',function(){
     }   
 })
 //Local Storage for the tasks if you want reload the website
-
+class valuesTask{
+    constructor(value){
+        this.value = value;
+        this.done = false;
+    }
+}
+let cacheTask = new Array()
 //Dynamic number for items left
 function itemsLeft(){
     let undoneTask = document.querySelectorAll('.checkbox').length;
-    let taskDone = document.querySelectorAll('.ok-checkbox').length;
-    //The next line, It's temporarily because if taskdone > undonetask will be a negative number 
+    let taskDone = document.querySelectorAll('.task-done').length;
     let itemsLeft = undoneTask - taskDone;
     document.querySelector('#itemsLeft').innerHTML= `${itemsLeft} items left`;
 }
@@ -42,35 +47,45 @@ input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
         let task = input.value;
         newTask(task);
+        cacheTask.push(new valuesTask(task))
         input.value = '';   
     }
     itemsLeft()
 })
+//Navigation for All task, active and completed
 
+let active = document.querySelector('.pages>p:nth-child(2)')
+let stateAll = true;
+active.addEventListener('click',function(){
+    stateAll
+        ? stateAll= false  
+        : stateAll = true
+    hideDoneTask()
+    active.classList.toggle('active')
+})
+function hideDoneTask(){
+    let okTask= document.querySelectorAll('.task-done')
+    stateAll 
+        ? okTask.forEach(task => task.style.display = 'flex') 
+        : okTask.forEach(task => task.style.display = 'none')
+}
 
 //Checkbox
-let checkbox = document.querySelectorAll('.checkbox')
+//This is NOT WORKING because querySelector takes the data one time from the DOM of the html
+let checkbox = document.querySelectorAll('.checkbox');
 checkbox.forEach(box =>{
     box.addEventListener('click',function(){
-        box.classList.toggle('ok-checkbox')
-        itemsLeft()
+        box.parentNode.classList.toggle('task-done');
+        itemsLeft();
+        hideDoneTask();
     })
 })
-//Navigation for All task, active and completed
-/*let pages = document.querySelectorAll('.pages>p')
-pages.forEach(page =>{
-    page.addEventListener('click',function(){
-        console.log(page)
-
-        page.classList.toggle('active')
-    })
-})*/
 
 //Button for Clear completed task
 let clearCompleted = document.getElementById('clear')
 clearCompleted.addEventListener('click',function(){
-    let taskCompleted = document.querySelectorAll('.ok-checkbox')
-    taskCompleted.forEach(taskDone => taskDone.parentNode.parentNode.removeChild(taskDone.parentNode))
+    let taskCompleted = document.querySelectorAll('.task-done')
+    taskCompleted.forEach(taskDone => taskDone.parentNode.removeChild(taskDone))
 })
 //Drag and drop
 //https://www.javascripttutorial.net/web-apis/javascript-drag-and-drop/
