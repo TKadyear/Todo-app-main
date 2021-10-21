@@ -9,12 +9,6 @@ buttonMode.addEventListener('click',function(){
         : buttonMode.src ="./images/icon-moon.svg"
 })
 //Local Storage for the tasks if you want reload the website
-/*class valuesTask{
-    constructor(value,done = false){
-        this.value = value;
-        this.done = done;
-    }
-}*/
 let cacheTask = new Array()
 //Dynamic number for items left
 function itemsLeft(){
@@ -63,7 +57,6 @@ input.addEventListener('keypress',function(e){
         input.value = '';   
     }
     itemsLeft()
-    refreshData()
 })
 //Edit button
 let editButton =document.querySelectorAll('img.edit');
@@ -79,43 +72,28 @@ editButton.forEach(edit=>{
         input.autofocus = true;
         edit.parentNode.insertBefore(input,edit);
         input.addEventListener('keypress',function(e){
+            e.preventDefault()
             if(e.key === 'Enter'){
                 let task = input.value;
                 let item = document.createElement('p');
                 item.textContent = task;
                 edit.parentNode.insertBefore(item,edit);
                 //After you press enter and insert the edit, the input will be remove
-                edit.parentNode.removeChild(input);
-                //cacheTask.replace(textToEdit,task) 
+                edit.parentNode.removeChild(input); 
             }
             
         }) 
         taskToEdit.parentNode.removeChild(taskToEdit)
         
     })
-   /* edit.parentNode.addEventListener('mouseover',function(){
-        edit.style.visibility='visible'
-    })
-    edit.parentNode.addEventListener('mouseout',function(){
-        edit.style.visibility='hidden'
-    })*/
 })
 //Delete Button
 deleteButton.forEach(supr =>{
     supr.addEventListener('click',function(){
         supr.parentNode.parentNode.removeChild(supr.parentNode)
         itemsLeft()
-    })
-    /*supr.parentNode.addEventListener('mouseover',function(){
-        supr.style.visibility='visible'
-    })
-    supr.parentNode.addEventListener('mouseout',function(){
-        supr.style.visibility='hidden'
-    })*/
-   
+    })  
 })
-
-
 
 //Navigation for All task, active and completed
 let active = document.querySelector('.pages>p:nth-child(2)')
@@ -134,16 +112,6 @@ function hideDoneTask(){
 
 //Checkbox
 //This is NOT WORKING because querySelector takes the data one time from the DOM of the html
-function refreshData(){
-    checkbox = document.querySelectorAll('.checkbox');
-    checkbox.forEach(box =>{
-        box.addEventListener('click',function(){
-            box.parentNode.classList.toggle('task-done');
-            itemsLeft();
-            hideDoneTask();
-        })
-    })
-}
 let checkbox = document.querySelectorAll('.checkbox');
 checkbox.forEach(box =>{
     box.addEventListener('click',function(){

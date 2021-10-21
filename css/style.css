@@ -107,7 +107,9 @@ body .container .content .checkbox:hover{
     bottom: 0;
     background: hsl(233, 11%, 84%);
 }
- 
+.task:hover img{
+    visibility: visible;
+}
 .task img{
     visibility: hidden;
     width: 18px;
