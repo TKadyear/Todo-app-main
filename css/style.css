@@ -5,6 +5,7 @@
     font-size: 18px;
 }
 
+
 /*Soft-reset styles of input*/
 input{
     border:none;
@@ -21,7 +22,6 @@ input:focus-visible{
 p {
     margin-block-start: 0em;
     margin-block-end: 0em;
-    width: -webkit-fill-available;
 }
 
 /*Structure of the website without the elements those will change in dark mode*/
@@ -53,11 +53,13 @@ h1{
 
 
 .content{
-    padding-top: 10vh;
+    padding-top: 5vh;
     width: 40%;
     margin: 0 auto;
 }
-
+.task>p{
+    width: -webkit-fill-available;
+}
 .checkbox,.circle{
     background:hsl(233, 11%, 84%);
     position: relative;
@@ -80,6 +82,15 @@ h1{
 body .container .content .checkbox:hover{
     cursor:pointer;
     background: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);
+}
+.hide{
+    opacity : '0.1';
+}
+.drag-over{
+    background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);;
+    /*cursor: grabbing;*/
+    cursor: move;
+    border-radius: inherit;
 }
 .task,.tools{
     display: flex;
@@ -117,7 +128,7 @@ body .container .content .checkbox:hover{
     cursor: pointer;
 }
 .task>p:hover{
-    cursor: grab;
+    cursor: move;
 }
 
 .task-done{
@@ -212,8 +223,12 @@ body.dark-mode .task-done p{
     color:hsl(235, 19%, 35%);
     text-decoration: line-through;
 }
+body.dark-mode input{
+    color: hsl(236, 33%, 92%);
+    caret-color: dodgerblue;
+}
 body.dark-mode .text-input{
-   
+  
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -259,7 +274,30 @@ body.dark-mode .checkbox:after,body.dark-mode .circle::after {
     padding: 8px;
     border-radius: 100%;
 }
-.drag-over {
-    background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);;
-    cursor: grabbing;
+@media only screen and (max-width: 426px){
+    body{
+        background-size: initial;
+        height: auto;
+        transition: 1s;
+    }
+    .content{
+        padding-top: 0;
+        width: 85%;
+        margin: 0 auto;
+    }
+    p{
+        font-size: 0.75em;
+    }
+    h1{
+        font-size: 1.5em;
+    }
+    .task,.tools,.text-input{
+        padding: 10px ;
+    }
+    .tools{
+        flex-wrap: wrap;
+    }
+    .pages{
+        order:1;
+    }
 }

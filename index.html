@@ -6,7 +6,7 @@
   <!-- displays site properly based on user's device -->
   <link rel="icon" type="image/png" sizes="32x32" href="./images/favicon-32x32.png">
   <title>Frontend Mentor | Todo app</title>
-  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" type="text/css"  href="css/style.css">
   <script defer src="main.js"></script>
 </head>
 <body class>
@@ -19,46 +19,46 @@
       
       <div class="text-input">
         <div class="circle"></div>
-        <input type="text" id='todo' placeholder="Create a new todo...">
+        <input type="text" id='todo' placeholder="Create a new todo..." required>
       </div>
       
       <div class="list">
-        <div class="task"  >
+      <div class="task" draggable = "true">
           <div class="checkbox"></div>
           <p>Complete Todo App on Frontend Mentor</p>
           <img class="edit" src="./images/icon-edit.svg">
           <img class="delete" src="./images/icon-cross.svg">
         </div>
          
-        <div class="task" >
+        <div class="task" draggable = "true">
           <div class="checkbox"></div>
           <p>Pick up groceries</p>
           <img class="edit" src="./images/icon-edit.svg">
           <img class="delete" src="./images/icon-cross.svg">
         </div>
          
-        <div class="task" >
+        <div class="task" draggable = "true" >
           <div class="checkbox"></div>
           <p>Read for 1 hour</p>
           <img class="edit" src="./images/icon-edit.svg">
           <img class="delete" src="./images/icon-cross.svg">
         </div>
 
-        <div class="task" >
+        <div class="task" draggable = "true" >
           <div class="checkbox"></div>
           <p>10 minutes of meditation</p>
           <img class="edit" src="./images/icon-edit.svg">
           <img class="delete" src="./images/icon-cross.svg">
         </div>
          
-        <div class="task" >
+        <div class="task" draggable = "true" >
           <div class="checkbox"></div>
           <p>Jog around the park 3x</p>
           <img class="edit" src="./images/icon-edit.svg">
           <img class="delete" src="./images/icon-cross.svg">
         </div>
          
-        <div class="task" >
+        <div class="task" draggable = "true" >
           <div class="checkbox"></div>
           <p>Complete online JavaScript course</p>
           <img class="edit" src="./images/icon-edit.svg">
@@ -75,6 +75,11 @@
           <p id="clear">Clear Completed</p>
         </div>
       </div>
+      <!--<div class="list pages">
+        <p class="active">All</p>
+        <p class>Active</p>
+        <p class>Completed</p>
+      </div>-->
     </div>
     <div class="info">
       <p>Drag and drop to reorder list</p>
