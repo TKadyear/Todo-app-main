@@ -13,12 +13,23 @@ function theme(){
 
 //Variables for LocalStorage
 let cacheTask = new Array()
-let indexedCache;
-const indexingCache = () => indexedCache = cacheTask.reduce((acc,el) =>({
-    ...acc,
-    [el.value]: el
-}),{})
+class ObjTask{
+    constructor(value,done = false){
+        this.value = value;
+        this.done = done;
+    }
+}
 
+const saveChangeForLS = () => {
+    let allTask = document.querySelectorAll('.task');
+    cacheTask = [];
+    for(let i = (allTask.length - 1) ; i >= 0; i--){
+        let valueOfTask = allTask[i].textContent
+        let statusOfTask = (allTask[i].className).includes('done')
+        cacheTask.push(new ObjTask(valueOfTask,statusOfTask))
+    }
+    saveLocalStorage()
+}
 const saveLocalStorage = () => localStorage.setItem('task',JSON.stringify(cacheTask))
 
 //Functions for LocalStorage
@@ -36,10 +47,10 @@ function itemsLeft(){
 let todo = document.querySelector('.list'); 
 let input = document.getElementById('todo');
 
-function newTask(data){
-    let i = Math.round(Math.random() * 200)
+function newTask(data,done = false,i = Math.round(Math.random() * 200)){
     let content = document.createElement('div');
     content.className = 'task';
+    if(done === true)content.classList.add('task-done')
     content.id = 'task-' + i;
     content.draggable = true;
     dragAndDrop(content)
@@ -73,12 +84,7 @@ input.addEventListener('keypress',function(e){
     if(e.key === 'Enter'){
         let task = input.value;
         newTask(task);
-        let cache = {
-            value: task,
-            done: false
-        }
-        cacheTask.push(cache)
-        indexingCache()
+        cacheTask.push(new ObjTask(task))
         saveLocalStorage()
         input.value = '';   
     }
@@ -87,6 +93,7 @@ input.addEventListener('keypress',function(e){
 function btnDelete(){
     this.parentNode.parentNode.removeChild(this.parentNode)
     itemsLeft()
+    saveChangeForLS()
 }
 function btnEditTask(event){
     event.stopPropagation()
@@ -98,6 +105,7 @@ function btnEditTask(event){
     input.type = 'text'
     input.value = p.innerHTML;
     input.autofocus = true;
+    this.parentNode.classList.remove('task-done');
     this.parentNode.insertBefore(input,this);
     
     input.addEventListener('keypress',function(e){
@@ -106,10 +114,14 @@ function btnEditTask(event){
             p.classList.remove('hidden')
             //After you press enter and insert the edit, the input will be remove
             this.parentNode.removeChild(input); 
-        }else if(e.key === 'Enter' && input.value === ''){
+            this.parentNode.classList.add('task-done');
+            editing = false;
+        }else if(e.key === 'Enter' && input.value === ' '){
             btnDelete()
         }
+        saveChangeForLS()
     })
+    
 }  
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll('.pages p')
@@ -125,11 +137,11 @@ function visibleTask(){
             hideDoneTask()
             break;
         case "Active":
-            stateAll = !stateAll
+            stateAll = false;
             hideDoneTask()
             break;
         case "Completed":
-            stateAll = !stateAll
+            stateAll = true;
             hideDoneTask()
             console.log(btnKey)
             break;
@@ -149,7 +161,7 @@ function hideDoneTask(){
 function btnCheckbox(){
     this.parentNode.classList.toggle('task-done'); 
     let nameOfTask = this.parentNode.textContent
-    //changeStatusTask(nameOfTask)
+    saveChangeForLS()
     itemsLeft();
     hideDoneTask();
 }
@@ -158,6 +170,7 @@ let clearCompleted = document.getElementById('clear')
 clearCompleted.addEventListener('click',function(){
     let taskCompleted = document.querySelectorAll('.task-done')
     taskCompleted.forEach(tDone => tDone.parentNode.removeChild(tDone))
+    saveChangeForLS()
 })
 //Drag and drop
 function dragAndDrop(task){
@@ -197,6 +210,8 @@ function drop(e){
     
     //add to the drop currentTarget but only insert the "task" before current target
     e.currentTarget.parentNode.insertBefore(DRAGGABLE,this);
+
+    saveChangeForLS()
 }
 //Local Storage 
 document.addEventListener('DOMContentLoaded',function(){
@@ -208,11 +223,13 @@ document.addEventListener('DOMContentLoaded',function(){
     }
     if(localStorage.getItem('task') != null){
         let uploadTask= JSON.parse(localStorage.getItem('task'))
+        cacheTask = uploadTask
         for(let i = 0; i < uploadTask.length; i++){
             let task = uploadTask[i].value
-            newTask(task)
+            let taskDone = uploadTask[i].done
+            newTask(task,taskDone,i)
         }
-        cacheTask = uploadTask
+        
         
     }
 })

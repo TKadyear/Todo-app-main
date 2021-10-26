@@ -181,12 +181,26 @@ body .container .content .list .task-done .checkbox:after {
 #itemsLeft{
     cursor: default;
 }
-
+.pages >p,p#clear{
+    transition: 500ms;
+}
 .pages > p:hover,p#clear:hover{
     color: hsl(235, 19%, 35%);
 }
-body .active, body.dark-mode .tools div .active{
-    color: dodgerblue;
+body .active{
+    color: hsl(235, 19%, 35%);
+    position: relative;
+}
+.active::after{
+    content: '';
+    position: absolute;
+    bottom: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 20px;
+    height: 5px;
+    border-radius: 5px;
+    background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);
 }
 .attribution{
     display: flex;
@@ -244,6 +258,9 @@ body.dark-mode .tools p {
 }
 
 body.dark-mode .pages > p:hover, body.dark-mode p#clear:hover{
+    color: hsl(236, 33%, 92%);
+}
+body.dark-mode .list .tools .active{
     color: hsl(236, 33%, 92%);
 }
 body.dark-mode .task::after{
