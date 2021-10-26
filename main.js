@@ -10,7 +10,6 @@ function theme(){
         ? themeButton.src ="./images/icon-sun.svg"
         : themeButton.src ="./images/icon-moon.svg"
 }
-
 //Variables for LocalStorage
 let cacheTask = new Array()
 class ObjTask{
@@ -19,7 +18,7 @@ class ObjTask{
         this.done = done;
     }
 }
-
+//Functions for LocalStorage
 const saveChangeForLS = () => {
     let allTask = document.querySelectorAll('.task');
     cacheTask = [];
@@ -32,9 +31,6 @@ const saveChangeForLS = () => {
 }
 const saveLocalStorage = () => localStorage.setItem('task',JSON.stringify(cacheTask))
 
-//Functions for LocalStorage
-
-
 //Dynamic number for items left
 function itemsLeft(){
     let undoneTask = document.querySelectorAll('.task').length;
@@ -46,8 +42,9 @@ function itemsLeft(){
 //Function for create new tasks
 let todo = document.querySelector('.list'); 
 let input = document.getElementById('todo');
+let randomNumber = (n = 0) => Math.floor((Math.random() * 500)+n)
 
-function newTask(data,done = false,i = Math.round(Math.random() * 200)){
+function newTask(data,done = false,i = randomNumber(cacheTask.length)){
     let content = document.createElement('div');
     content.className = 'task';
     if(done === true)content.classList.add('task-done')
@@ -88,7 +85,6 @@ input.addEventListener('keypress',function(e){
         saveLocalStorage()
         input.value = '';   
     }
-     
 })
 function btnDelete(){
     this.parentNode.parentNode.removeChild(this.parentNode)
@@ -126,44 +122,41 @@ function btnEditTask(event){
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll('.pages p')
 pages.forEach(page => page.addEventListener('click', visibleTask))
-let stateAll = true;
+
 function visibleTask(){
     let btnKey = this.innerText
     pages.forEach(p => p.classList.remove('active'))
     this.classList.add('active')
+    let okTask= document.querySelectorAll('.task-done')
+    let allUndoneTask = document.querySelectorAll('.task')
     switch (btnKey) {
-        case "All":
+        case pages[0].textContent:
             stateAll = true;
-            hideDoneTask()
+            okTask.forEach(t => t.classList.remove('hidden'))
+            allUndoneTask.forEach(t => t.classList.remove('hidden'))
             break;
-        case "Active":
+        case pages[1].textContent:
             stateAll = false;
-            hideDoneTask()
+            allUndoneTask.forEach(t => t.classList.remove('hidden'))
+            okTask.forEach(t => t.classList.add('hidden'))
             break;
-        case "Completed":
-            stateAll = true;
-            hideDoneTask()
-            console.log(btnKey)
+        case pages[2].textContent:
+            okTask.forEach(t => t.classList.remove('hidden'))
+            allUndoneTask.forEach(t => {
+                if((t.className).includes('done') === false ) t.classList.add('hidden')
+            })
             break;
         default:
             console.error('Not working..')
             break;
     }
 }
-function hideDoneTask(){
-    let okTask= document.querySelectorAll('.task-done')
-    stateAll 
-        ? okTask.forEach(task => task.classList.remove('hidden')) 
-        : okTask.forEach(task => task.classList.add('hidden'))
-}
 
 //Checkbox
 function btnCheckbox(){
     this.parentNode.classList.toggle('task-done'); 
-    let nameOfTask = this.parentNode.textContent
     saveChangeForLS()
     itemsLeft();
-    hideDoneTask();
 }
 //Button for Clear completed task
 let clearCompleted = document.getElementById('clear')
