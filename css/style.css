@@ -83,15 +83,10 @@ body .container .content .checkbox:hover{
     cursor:pointer;
     background: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);
 }
-.hide{
-    opacity : '0.1';
+.hidden{
+    display: none!important;
 }
-.drag-over{
-    background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);;
-    /*cursor: grabbing;*/
-    cursor: move;
-    border-radius: inherit;
-}
+
 .task,.tools{
     display: flex;
     position: relative;
@@ -118,6 +113,9 @@ body .container .content .checkbox:hover{
     bottom: 0;
     background: hsl(233, 11%, 84%);
 }
+.drag-over::after {
+    background-image: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%); 
+}
 .task:hover img{
     visibility: visible;
 }
@@ -135,6 +133,7 @@ body .container .content .checkbox:hover{
     color:hsl(236, 9%, 61%);
     text-decoration: line-through;
 }
+
 body .container .content .task-done .checkbox{
     position: relative;
     background: linear-gradient(315deg, rgb(192,88,243,1) 0%, rgb(87,222,255,1) 100%);
@@ -274,6 +273,9 @@ body.dark-mode .checkbox:after,body.dark-mode .circle::after {
     padding: 8px;
     border-radius: 100%;
 }
+.mobile{
+    display: none;
+}
 @media only screen and (max-width: 426px){
     body{
         background-size: initial;
@@ -285,6 +287,10 @@ body.dark-mode .checkbox:after,body.dark-mode .circle::after {
         width: 85%;
         margin: 0 auto;
     }
+    .screen{
+        display: none;
+    }
+  
     p{
         font-size: 0.75em;
     }
@@ -295,9 +301,12 @@ body.dark-mode .checkbox:after,body.dark-mode .circle::after {
         padding: 10px ;
     }
     .tools{
-        flex-wrap: wrap;
+        justify-content: space-evenly;
     }
     .pages{
         order:1;
+    }
+    .mobile{
+        display: flex;
     }
 }

@@ -2,7 +2,6 @@
 let themeButton = document.querySelector('nav>img')
 let darkMode = false;
 themeButton.addEventListener('click',theme)
-
 function theme(){
     document.body.classList.toggle('dark-mode')
     darkMode = !darkMode
@@ -20,13 +19,16 @@ const indexingCache = () => indexedCache = cacheTask.reduce((acc,el) =>({
     [el.value]: el
 }),{})
 
+const saveLocalStorage = () => localStorage.setItem('task',JSON.stringify(cacheTask))
+
+//Functions for LocalStorage
 
 
 //Dynamic number for items left
 function itemsLeft(){
     let undoneTask = document.querySelectorAll('.task').length;
-    let taskDone = document.querySelectorAll('.task-done').length;
-    let itemsLeft = undoneTask - taskDone;
+    let changeStatusTask = document.querySelectorAll('.task-done').length;
+    let itemsLeft = undoneTask - changeStatusTask;
     document.querySelector('#itemsLeft').innerHTML= `${itemsLeft} items left`;
 }
 
@@ -35,26 +37,36 @@ let todo = document.querySelector('.list');
 let input = document.getElementById('todo');
 
 function newTask(data){
+    let i = Math.round(Math.random() * 200)
     let content = document.createElement('div');
     content.className = 'task';
+    content.id = 'task-' + i;
     content.draggable = true;
+    dragAndDrop(content)
     let checkbox = document.createElement('div');
     checkbox.className = 'checkbox';
+    checkbox.addEventListener('click', btnCheckbox)
+
     let item = document.createElement('p');
     item.textContent = data;
 
     let iconEdit = document.createElement('img');
     iconEdit.className= 'edit';
     iconEdit.src = "./images/icon-edit.svg";
+    iconEdit.addEventListener('click', btnEditTask)
+
     let iconCross = document.createElement('img');
     iconCross.className = 'delete'
     iconCross.src = "./images/icon-cross.svg";
+    iconCross.addEventListener('click',btnDelete); 
 
     content.appendChild(checkbox);
     content.appendChild(item);
     content.appendChild(iconEdit)
     content.appendChild(iconCross)
     todo.insertBefore(content,todo.firstElementChild);
+    
+    itemsLeft()
 }
 //The input which add new task to the list 
 input.addEventListener('keypress',function(e){
@@ -66,172 +78,126 @@ input.addEventListener('keypress',function(e){
             done: false
         }
         cacheTask.push(cache)
-        localStorage.setItem('task',JSON.stringify(cacheTask))
+        indexingCache()
+        saveLocalStorage()
         input.value = '';   
     }
-    allPropertys()
+     
 })
-function editDelButtons(){ 
-    //Buttons for edit and delete
-    let editButton =document.querySelectorAll('img.edit');
-    let deleteButton =document.querySelectorAll('img.delete');
-    //Delete Button
-    deleteButton.forEach(supr =>{
-        supr.addEventListener('click',function(){
-            supr.parentNode.parentNode.removeChild(supr.parentNode)
-            itemsLeft()
-        })  
-    })
-    //Edit
-    editButton.forEach(edit=>{
-        edit.addEventListener('click',function(event){
-            event.stopPropagation()
-            event.preventDefault()
-            let taskToEdit = edit.previousElementSibling
-            let textToEdit = taskToEdit.innerHTML
-            //The way of create the input to change the task
-            let input = document.createElement(`input`)
-            input.type = 'text'
-            input.value = textToEdit;
-            input.autofocus = true;
-            edit.parentNode.insertBefore(input,edit);
-            taskToEdit.parentNode.removeChild(taskToEdit);
-        
-            input.addEventListener('keypress',function(e){
-                if(e.key === 'Enter'){
-                    let task = input.value;
-                    let item = document.createElement('p');
-                    item.textContent = task;
-                    edit.parentNode.insertBefore(item,edit);
-                    //After you press enter and insert the edit, the input will be remove
-                    edit.parentNode.removeChild(input); 
-                }
-            })
-        })   
-    })
+function btnDelete(){
+    this.parentNode.parentNode.removeChild(this.parentNode)
+    itemsLeft()
 }
-
-
+function btnEditTask(event){
+    event.stopPropagation()
+    event.preventDefault()
+    let p = this.previousElementSibling
+    p.classList.add('hidden')
+    //The way of create the input to change the task
+    let input = document.createElement(`input`)
+    input.type = 'text'
+    input.value = p.innerHTML;
+    input.autofocus = true;
+    this.parentNode.insertBefore(input,this);
+    
+    input.addEventListener('keypress',function(e){
+        if(e.key === 'Enter' && input.value != ''){
+            p.innerHTML = input.value
+            p.classList.remove('hidden')
+            //After you press enter and insert the edit, the input will be remove
+            this.parentNode.removeChild(input); 
+        }else if(e.key === 'Enter' && input.value === ''){
+            btnDelete()
+        }
+    })
+}  
 //Navigation for All task, active and completed
-let active = document.querySelector('.pages>p:nth-child(2)')
+let pages = document.querySelectorAll('.pages p')
+pages.forEach(page => page.addEventListener('click', visibleTask))
 let stateAll = true;
-
-active.addEventListener('click',function(){
-    stateAll = !stateAll
-    hideDoneTask()
-    active.classList.toggle('active')
-    let all = document.querySelector('.pages>p:first-child')
-    all.classList.toggle('active')
-})
+function visibleTask(){
+    let btnKey = this.innerText
+    pages.forEach(p => p.classList.remove('active'))
+    this.classList.add('active')
+    switch (btnKey) {
+        case "All":
+            stateAll = true;
+            hideDoneTask()
+            break;
+        case "Active":
+            stateAll = !stateAll
+            hideDoneTask()
+            break;
+        case "Completed":
+            stateAll = !stateAll
+            hideDoneTask()
+            console.log(btnKey)
+            break;
+        default:
+            console.error('Not working..')
+            break;
+    }
+}
 function hideDoneTask(){
     let okTask= document.querySelectorAll('.task-done')
     stateAll 
-        ? okTask.forEach(task => task.style.display = 'flex') 
-        : okTask.forEach(task => task.style.display = 'none')
+        ? okTask.forEach(task => task.classList.remove('hidden')) 
+        : okTask.forEach(task => task.classList.add('hidden'))
 }
 
 //Checkbox
-//This is NOT WORKING because querySelector takes the data one time from the DOM of the html
-/*function taskDone(task){
-    //Technically the next line will be only available in the function of making new tasks
-    //In this way we keep it the array updated
-    indexingCache()
-    let state = indexedCache[task].done
-    let sample = indexedCache[task].done = !state
+function btnCheckbox(){
+    this.parentNode.classList.toggle('task-done'); 
+    let nameOfTask = this.parentNode.textContent
+    //changeStatusTask(nameOfTask)
+    itemsLeft();
+    hideDoneTask();
 }
-function checkTheCheckbox(task){
-    let state = indexedCache[task].done
-   
-}*/
-function doneCheckbox(){
-    let checkbox = document.querySelectorAll('.checkbox');
-    checkbox.forEach(box =>{
-        box.addEventListener('click',function(){
-            box.parentNode.classList.toggle('task-done'); 
-            let task = box.parentNode.innerText
-            taskDone(task)
-            itemsLeft();
-            hideDoneTask();
-        })
-    })
-}
-//Function to change state of done in the cacheTask fOR Local Storage
-function cacheDoneTask(task){
-    cacheDoneTask.find
-    cacheTask(replace)
-}
-
-
 //Button for Clear completed task
 let clearCompleted = document.getElementById('clear')
 clearCompleted.addEventListener('click',function(){
     let taskCompleted = document.querySelectorAll('.task-done')
-    taskCompleted.forEach(taskDone => taskDone.parentNode.removeChild(taskDone))
+    taskCompleted.forEach(tDone => tDone.parentNode.removeChild(tDone))
 })
 //Drag and drop
-function dragAndDrop(){
-    let taskAll =document.querySelectorAll('.task')
-    taskAll.forEach(task =>{
-        task.addEventListener('dragstart',dragStart)
-        task.addEventListener('dragenter',dragEnter)
-        task.addEventListener('dragover',dragOver)
-        task.addEventListener('dragend',dragEnd)
-        task.addEventListener('dragleave',dragLeave)
-        task.addEventListener('drop',drop)
-    })
+function dragAndDrop(task){
+    task.addEventListener('dragstart',dragStart)
+    task.addEventListener('dragenter',dragEnter)
+    task.addEventListener('dragover',dragOver)
+    task.addEventListener('dragleave',dragLeave)
+    task.addEventListener('drop',drop)
 }
-let dragSrcEl;
-let check;
 function dragStart(e){
     e.stopPropagation()
-    dragSrcEl = this;
     e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.innerHTML);
-    //e.target.classList.add('hide');
+    e.dataTransfer.setData('text/html', e.currentTarget.id);
 }
 
 function dragEnter(e){
     e.preventDefault();
     e.stopPropagation()
-    //e.target.classList.add('hide');
-    e.currentTarget.classList.add('drag-over');
+    
+   e.currentTarget.classList.add('drag-over');
 }
 function dragOver(e){
     e.preventDefault();
     e.stopPropagation();
-    //e.target.classList.add('hide');
     e.currentTarget.classList.add('drag-over');
-}
-function dragEnd(e){
-    e.preventDefault();
-    e.stopPropagation();
-    //e.target.classList.remove('hide');
 }
 function dragLeave(e){
     e.preventDefault();
     e.stopPropagation();
-    //e.target.classList.remove('hide');
     e.currentTarget.classList.remove('drag-over');
 }
 function drop(e){
-    e.preventDefault();
-    e.stopPropagation();
-    //e.target.classList.remove('hide');
     e.currentTarget.classList.remove('drag-over');
-    if(dragSrcEl !== this){
-        dragSrcEl.innerHTML = this.innerHTML;
-        this.innerHTML = e.dataTransfer.getData('text/html');
-      }
-    return false; 
+    //get the draggable element
+    const ID = e.dataTransfer.getData('text/html');
+    const DRAGGABLE = document.getElementById(ID);
+    
+    //add to the drop currentTarget but only insert the "task" before current target
+    e.currentTarget.parentNode.insertBefore(DRAGGABLE,this);
 }
-function allPropertys(){
-    itemsLeft()
-    dragAndDrop()
-    editDelButtons()
-    doneCheckbox()
-}
-allPropertys()
-
 //Local Storage 
 document.addEventListener('DOMContentLoaded',function(){
     if(localStorage.getItem('darkMode') === null){
@@ -246,6 +212,7 @@ document.addEventListener('DOMContentLoaded',function(){
             let task = uploadTask[i].value
             newTask(task)
         }
-        allPropertys()
+        cacheTask = uploadTask
+        
     }
 })
