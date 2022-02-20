@@ -33,8 +33,7 @@ const saveChangeForLS = () => {
   }
   saveLocalStorage();
 };
-const saveLocalStorage = () =>
-  localStorage.setItem("task", JSON.stringify(cacheTask));
+const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(cacheTask));
 
 //Dynamic number for items left
 function itemsLeft() {
@@ -132,12 +131,15 @@ pages.forEach((page) => page.addEventListener("click", visibleTask));
 // TODO While page "active" is selected,if a task is done.Make a refresh for the page.
 
 function visibleTask() {
-  let btnKey = this.innerText;
   pages.forEach((p) => p.classList.remove("active"));
   this.classList.add("active");
+  let btnKey = this.innerText;
+  statusPages(btnKey);
+}
+function statusPages(page) {
   let okTask = document.querySelectorAll(".task-done");
   let allUndoneTask = document.querySelectorAll(".task");
-  switch (btnKey) {
+  switch (page) {
     case pages[0].textContent: //All
       okTask.forEach((t) => t.classList.remove("hidden"));
       allUndoneTask.forEach((t) => t.classList.remove("hidden"));
@@ -157,7 +159,6 @@ function visibleTask() {
       break;
   }
 }
-
 //Checkbox
 function btnCheckbox() {
   this.parentNode.classList.toggle("task-done");

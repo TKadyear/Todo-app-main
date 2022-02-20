@@ -4,6 +4,18 @@
   font-family: "Josefin Sans", sans-serif;
   font-size: 18px;
 }
+:root {
+  --bg-light: hsl(0, 0%, 98%);
+  --white: hsl(0, 0%, 100%);
+  --divider: hsl(233, 11%, 84%);
+  --violet: rgb(192,88,243,1);
+  --blue: rgb(87,222,255,1);
+  --light-task-done: hsl(236, 9%, 61%);
+  --active-state: hsl(235, 19%, 35%);
+  --bg-dark: hsl(235, 21%, 11%);
+  --content-bg-dark: hsl(235, 24%, 19%);
+
+}
 
 /*Soft-reset styles of input*/
 input {
@@ -26,12 +38,18 @@ p {
 /*Structure of the website without the elements those will change in dark mode*/
 body {
   margin: 0px 0px;
-  background: url(../images/bg-desktop-light.jpg) hsl(0, 0%, 98%) no-repeat;
-  background-size: contain;
   height: auto;
   transition: 1s;
 }
+#background{
+  position: absolute;
+  background: url(../images/bg-desktop-light.jpg) no-repeat;
+  background-size: contain;
+  height: 50vh;
+  width: 100vw;
+}
 .container {
+  z-index: 1;
   position: relative;
 }
 
@@ -48,7 +66,7 @@ h1 {
   cursor: default;
   font-weight: bold;
   font-size: 2.5em;
-  color: white;
+  color: var(--white);
   text-transform: uppercase;
   letter-spacing: 0.3em;
 }
@@ -66,7 +84,7 @@ h1 {
 }
 .checkbox,
 .circle {
-  background: hsl(233, 11%, 84%);
+  background: var(--divider);
   position: relative;
   border-radius: 100%;
   margin: 0px 10px;
@@ -81,7 +99,7 @@ h1 {
   left: 1px;
   bottom: 1px;
   content: "";
-  background: white;
+  background: var(--white);
   padding: 8px;
   border-radius: 100%;
 }
@@ -89,8 +107,8 @@ body .container .content .checkbox:hover {
   cursor: pointer;
   background: linear-gradient(
     315deg,
-    rgb(192, 88, 243, 1) 0%,
-    rgb(87, 222, 255, 1) 100%
+    var(--violet) 0%,
+    var(--blue) 100%
   );
 }
 .hidden {
@@ -111,7 +129,7 @@ body .container .content .checkbox:hover {
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  background: rgb(255, 255, 255);
+  background: var(--white);
   padding: 20px;
   border-radius: 5px;
 }
@@ -122,13 +140,13 @@ body .container .content .checkbox:hover {
   width: 100%;
   left: 0;
   bottom: 0;
-  background: hsl(233, 11%, 84%);
+  background: var(--divider);
 }
 .drag-over::after {
   background-image: linear-gradient(
     315deg,
-    rgb(192, 88, 243, 1) 0%,
-    rgb(87, 222, 255, 1) 100%
+    var(--violet) 0%,
+    var(--blue) 100%
   );
 }
 .task:hover img {
@@ -145,7 +163,7 @@ body .container .content .checkbox:hover {
 }
 
 .task-done {
-  color: hsl(236, 9%, 61%);
+  color: var(--light-task-done);
   text-decoration: line-through;
 }
 
@@ -153,8 +171,8 @@ body .container .content .task-done .checkbox {
   position: relative;
   background: linear-gradient(
     315deg,
-    rgb(192, 88, 243, 1) 0%,
-    rgb(87, 222, 255, 1) 100%
+    var(--violet) 0%,
+    var(--blue) 100%
   );
   background-repeat: no-repeat;
   border-radius: 100%;
@@ -172,8 +190,8 @@ body .container .content .list .task-done .checkbox:after {
   background: url(../images/icon-check.svg);
   background-color: linear-gradient(
     315deg,
-    rgb(192, 88, 243, 1) 0%,
-    rgb(87, 222, 255, 1) 100%
+    var(--violet) 0%,
+    var(--blue) 100%
   );
   background-repeat: no-repeat;
   background-position: center;
@@ -182,11 +200,11 @@ body .container .content .list .task-done .checkbox:after {
 }
 
 .list {
-  background: rgb(255, 255, 255);
+  background: var(--white);
   margin: 1.5em auto;
   border-radius: 5px;
-  -webkit-box-shadow: 0px 6px 16px -2px hsl(236, 9%, 61%);
-  box-shadow: 0px 6px 16px -2px hsl(236, 9%, 61%);
+  -webkit-box-shadow: 0px 6px 16px -2px var(--light-task-done);
+  box-shadow: 0px 6px 16px -2px var(--light-task-done);
 }
 
 .tools,
@@ -197,7 +215,7 @@ body .container .content .list .task-done .checkbox:after {
   align-items: baseline;
 }
 .tools p {
-  color: hsl(236, 9%, 61%);
+  color: var(--light-task-done));
   padding: 0 10px;
   cursor: pointer;
 }
@@ -210,10 +228,10 @@ p#clear {
 }
 .pages > p:hover,
 p#clear:hover {
-  color: hsl(235, 19%, 35%);
+  color: var(--active-state);
 }
 body .active {
-  color: hsl(235, 19%, 35%);
+  color: var(--active-state);
   position: relative;
 }
 .active::after {
@@ -227,8 +245,8 @@ body .active {
   border-radius: 5px;
   background-image: linear-gradient(
     315deg,
-    rgb(192, 88, 243, 1) 0%,
-    rgb(87, 222, 255, 1) 100%
+    var(--violet) 0%,
+    var(--blue) 100%
   );
 }
 .attribution {
@@ -249,89 +267,85 @@ body .active {
 }
 /*Style for dark-mode*/
 .dark-mode {
-  background: url(../images/bg-desktop-dark.jpg) hsl(235, 21%, 11%) no-repeat;
-  background-size: contain;
+  background: var(--bg-dark);
 }
-body.dark-mode p {
-  color: hsl(236, 33%, 92%);
-}
-body.dark-mode .attribution p,
-body.dark-mode .info > p {
-  color: hsl(235, 19%, 35%);
-}
-body.dark-mode .list {
-  background: hsl(235, 24%, 19%);
-  margin: 1.5em auto;
-  border-radius: 5px;
-  -webkit-box-shadow: 0px 6px 16px -2px hsl(235, 21%, 11%);
-  box-shadow: 0px 6px 16px -2px hsl(235, 21%, 11%);
-}
-body.dark-mode .task-done p {
-  color: hsl(235, 19%, 35%);
-  text-decoration: line-through;
-}
-body.dark-mode input {
-  color: hsl(236, 33%, 92%);
-  caret-color: dodgerblue;
-}
-body.dark-mode .text-input {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  background: hsl(235, 24%, 19%);
-  padding: 20px;
-  border-radius: 5px;
+body.dark-mode{
+
+  #background{
+    background: url(../images/bg-desktop-dark.jpg) var(--bg-dark) no-repeat;
+  }
+  p {
+    color: var(--divider);
+  }
+  .attribution p,.info > p{
+    color: var(--active-state);
+  }
+  .checkbox:after,.circle::after {
+    position: absolute;
+    top: 1px;
+    right: 1px;
+    left: 1px;
+    bottom: 1px;
+    content: "";
+    background: var(--content-bg-dark);
+    padding: 8px;
+    border-radius: 100%;
+  }
+  .list {
+    background: var(--content-bg-dark);
+   -webkit-box-shadow: 0px 6px 16px -2px var(--bg-dark);
+    box-shadow: 0px 6px 16px -2px var(--bg-dark);
+  }
+  .task-done p {
+    color: var(--active-state);
+    text-decoration: line-through;
+  }
+  .text-input {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    background: var(--content-bg-dark);
+  }
+  input {
+    color: var(--white);
+
+  }
+  .tools p {
+    color: var(--active-state);
+  }
+  .pages > p:hover,
+   p#clear:hover {
+    color: var(--white);
+  }
+  .list .tools .active {
+    color: var(--white);
+  }
+  .task::after {
+    content: "";
+    position: absolute;
+    height: 1px;
+    width: 100%;
+    bottom: 0;
+    background: var(--active-state);
+  }
+  .checkbox,.circle{
+    background: var(--active-state);
+    position: relative;
+    border-radius: 100%;
+    margin: 0px 10px;
+    padding: 9px;
+    transition: 2s;
+  }
 }
 
-body.dark-mode .tools p {
-  color: hsl(235, 19%, 35%);
-  padding: 0 10px;
-  cursor: pointer;
-}
-
-body.dark-mode .pages > p:hover,
-body.dark-mode p#clear:hover {
-  color: hsl(236, 33%, 92%);
-}
-body.dark-mode .list .tools .active {
-  color: hsl(236, 33%, 92%);
-}
-body.dark-mode .task::after {
-  content: "";
-  position: absolute;
-  height: 1px;
-  width: 100%;
-  bottom: 0;
-  background: hsl(233, 14%, 35%);
-}
-body.dark-mode .checkbox,
-body.dark-mode .circle {
-  background: hsl(233, 14%, 35%);
-  position: relative;
-  border-radius: 100%;
-  margin: 0px 10px;
-  padding: 9px;
-  transition: 2s;
-}
-body.dark-mode .checkbox:after,
-body.dark-mode .circle::after {
-  position: absolute;
-  top: 1px;
-  right: 1px;
-  left: 1px;
-  bottom: 1px;
-  content: "";
-  background: hsl(235, 24%, 19%);
-  padding: 8px;
-  border-radius: 100%;
-}
 .mobile {
   display: none;
 }
+
 @media only screen and (min-width: 1441px) and (max-width: 2560px) {
   .content {
-    top: 15vh;
+    top: 10vh;
     max-width: 900px;
   }
 }
@@ -341,6 +355,11 @@ body.dark-mode .circle::after {
     background-size: initial;
     height: auto;
     transition: 1s;
+  }
+  body #background{
+    background-size: cover;
+    background-position: center;
+    height: 30vh;
   }
   .content {
     min-width: 200px;
