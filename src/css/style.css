@@ -46,7 +46,7 @@ body {
   background: url(../images/bg-desktop-light.jpg) no-repeat;
   background-size: contain;
   height: 50vh;
-  width: 100vw;
+  width: 100%;
 }
 .container {
   z-index: 1;
@@ -347,6 +347,16 @@ body.dark-mode{
   .content {
     top: 10vh;
     max-width: 900px;
+  }
+}
+@media only screen and (max-width: 769px) {
+  body #background{
+    background-size: cover;
+    background-position: center;
+    height: 30vh;
+  }
+  .content {
+    max-width: 75%;
   }
 }
 
