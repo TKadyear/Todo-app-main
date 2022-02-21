@@ -15,7 +15,7 @@ function theme() {
     : (themeButton.src = "./images/icon-moon.svg");
 }
 //Variables for LocalStorage
-let cacheTask = new Array();
+let cacheTask = [];
 class ObjTask {
   constructor(value, done = false) {
     this.value = value;
@@ -49,7 +49,7 @@ let input = document.getElementById("todo");
 let randomNumber = (n = 0) => Math.floor(Math.random() * 500 + n);
 
 function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
-  let content = document.createElement("div");
+  let content = document.createElement("li");
   content.className = "task";
   if (done === true) content.classList.add("task-done");
   content.id = "task-" + i;
@@ -125,39 +125,46 @@ function btnEditTask(event) {
     saveChangeForLS();
   });
 }
+let whichPageisActive = "all"
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll(".pages p");
-pages.forEach((page) => page.addEventListener("click", visibleTask));
+pages.forEach((page) => page.addEventListener("click", () => {
+  pages.forEach((p) => p.classList.remove("active"));
+  whichPageisActive = page.innerText;
+  page.classList.add("active");
+  statusPages(page.innerText);
+})
+);
 // TODO While page "active" is selected,if a task is done.Make a refresh for the page.
 
-function visibleTask() {
-  pages.forEach((p) => p.classList.remove("active"));
-  this.classList.add("active");
-  let btnKey = this.innerText;
-  statusPages(btnKey);
-}
 function statusPages(page) {
-  let okTask = document.querySelectorAll(".task-done");
-  let allUndoneTask = document.querySelectorAll(".task");
-  switch (page) {
-    case pages[0].textContent: //All
-      okTask.forEach((t) => t.classList.remove("hidden"));
-      allUndoneTask.forEach((t) => t.classList.remove("hidden"));
-      break;
-    case pages[1].textContent: //Active
-      allUndoneTask.forEach((t) => t.classList.remove("hidden"));
-      okTask.forEach((t) => t.classList.add("hidden"));
-      break;
-    case pages[2].textContent: //Completed
-      okTask.forEach((t) => t.classList.remove("hidden"));
-      allUndoneTask.forEach((t) => {
-        if (t.className.includes("done") === false) t.classList.add("hidden");
-      });
-      break;
-    default:
-      console.error("Not working..");
-      break;
+  const resetList = document.querySelector('ul.list')
+  resetList.innerHTML = " ";
+  let listTask = [...cacheTask];
+  if (page != "all") {
+    const done = (page === "Completed");
+    listTask = listTask.filter((task) => task.done === done)
   }
+  listTask.forEach(task => newTask(task.value, task.done))
+  // switch (page) {
+  //   case pages[0].textContent: //All
+  //     okTask.forEach((t) => t.classList.remove("hidden"));
+  //     allUndoneTask.forEach((t) => t.classList.remove("hidden"));
+  //     break;
+  //   case pages[1].textContent: //Active
+  //     allUndoneTask.forEach((t) => t.classList.remove("hidden"));
+  //     okTask.forEach((t) => t.classList.add("hidden"));
+  //     break;
+  //   case pages[2].textContent: //Completed
+  //     okTask.forEach((t) => t.classList.remove("hidden"));
+  //     allUndoneTask.forEach((t) => {
+  //       if (t.className.includes("done") === false) t.classList.add("hidden");
+  //     });
+  //     break;
+  //   default:
+  //     console.error("Not working..");
+  //     break;
+  // }
 }
 //Checkbox
 function btnCheckbox() {
@@ -213,12 +220,17 @@ function drop(e) {
   const DRAGGABLE = document.querySelector(`#${ID}`);
   //add to the drop currentTarget but only insert the "task" before current target
   // e.currentTarget.parentNode.insertBefore(DRAGGABLE, this);
-  console.log(DRAGGABLE)
+  //BUG the drop area is not defined
   e.target.insertAdjacentElement("afterend", DRAGGABLE)
   DRAGGABLE.classList.remove("hidden")
 
   saveChangeForLS();
 }
+window.addEventListener("resize", () => {
+  if (window.innerWidth <= 426) {
+
+  }
+}, { once: true })
 //Local Storage
 document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("darkMode") === null) {
