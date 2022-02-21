@@ -2,6 +2,8 @@
 //also prevent the errors if I need to change the name of the class
 const TASK = "task";
 const TASKDONE = "-done";
+
+let whichPageisActive = "all"
 //Toggle for dark mode
 let themeButton = document.querySelector("nav>img");
 let darkMode = false;
@@ -56,7 +58,11 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
   dragAndDrop(content);
   let checkbox = document.createElement("div");
   checkbox.className = "checkbox";
-  checkbox.addEventListener("click", btnCheckbox);
+  checkbox.addEventListener("click", () => {
+    content.classList.toggle("task-done");
+    saveChangeForLS();
+    itemsLeft();
+  });
 
   let item = document.createElement("p");
   item.textContent = data;
@@ -124,7 +130,7 @@ function btnEditTask(event) {
     saveChangeForLS();
   });
 }
-let whichPageisActive = "all"
+
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll(".pages p");
 pages.forEach((page) => page.addEventListener("click", () => {
@@ -145,12 +151,6 @@ function statusPages(page) {
     listTask = listTask.filter((task) => task.done === done)
   }
   listTask.forEach(task => newTask(task.value, task.done))
-}
-//Checkbox
-function btnCheckbox() {
-  this.parentNode.classList.toggle("task-done");
-  saveChangeForLS();
-  itemsLeft();
 }
 //Button for Clear completed task
 let clearCompleted = document.getElementById("clear");
