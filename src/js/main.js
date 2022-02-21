@@ -2,7 +2,7 @@
 //also prevent the errors if I need to change the name of the class
 const TASK = "task";
 const TASKDONE = "-done";
-
+let editing = false;
 let whichPageisActive = "all"
 //Toggle for dark mode
 let themeButton = document.querySelector("nav>img");
@@ -46,7 +46,7 @@ function itemsLeft() {
 
 //Function for create new tasks
 let todo = document.querySelector(".list");
-let input = document.getElementById("todo");
+
 let randomNumber = (n = 0) => Math.floor(Math.random() * 500 + n);
 
 function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
@@ -60,7 +60,9 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
   checkbox.className = "checkbox";
   checkbox.addEventListener("click", () => {
     content.classList.toggle("task-done");
-    saveChangeForLS();
+    const index = cacheTask.findIndex(task => task.value === data)
+    cacheTask[index].done = !cacheTask[index].done
+    saveLocalStorage();
     itemsLeft();
   });
 
@@ -70,12 +72,46 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
   let iconEdit = document.createElement("img");
   iconEdit.className = "edit";
   iconEdit.src = "./images/icon-edit.svg";
-  iconEdit.addEventListener("click", btnEditTask);
-
+  iconEdit.addEventListener("click", () => {
+    if (!editing) {
+      editing = true;
+      item.classList.add("hidden")
+      //The way of create the input to change the task
+      let input = document.createElement(`input`);
+      input.type = "text";
+      input.value = data;
+      input.autofocus = true;
+      content.classList.remove("task-done");
+      // BUG If the checkbox was marked. While You're editing the task, the check shows empty.
+      item.insertAdjacentElement("beforebegin", input);
+      /*  BUG
+       ! main.js:64 Uncaught TypeError: Cannot read properties of undefined (reading 'done')
+       ! at HTMLDivElement.<anonymous
+       */
+      input.addEventListener("keypress", function (e) {
+        if (e.key === "Enter") {
+          item.innerHTML = input.value;
+          item.classList.remove("hidden");
+          //After you press enter and insert the edit, the input will be remove
+          content.removeChild(input);
+          content.classList.add("task-done");
+          const index = cacheTask.findIndex(task => task.value === data)
+          cacheTask[index].value = input.value
+        }
+        editing = false;
+        saveLocalStorage();
+      });
+    }
+  })
   let iconCross = document.createElement("img");
   iconCross.className = "delete";
   iconCross.src = "./images/icon-cross.svg";
-  iconCross.addEventListener("click", btnDelete);
+  iconCross.addEventListener("click", () => {
+    content.remove();
+    cacheTask = cacheTask.filter(task => task.value != data);
+    saveLocalStorage();
+    itemsLeft();
+  });
 
   content.appendChild(checkbox);
   content.appendChild(item);
@@ -85,51 +121,18 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
 
   itemsLeft();
 }
+const inputForNewTask = document.getElementById("todo");
 //The input which add new task to the list
-input.addEventListener("keypress", function (e) {
-  if (e.key === "Enter") {
-    let task = input.value;
+inputForNewTask.addEventListener("keypress", (e) => {
+  const task = inputForNewTask.value;
+  if (e.key === "Enter" && task != "") {
     newTask(task);
     cacheTask.push(new ObjTask(task));
     saveLocalStorage();
-    input.value = "";
+    inputForNewTask.value = "";
   }
 });
-function btnDelete() {
-  this.parentNode.parentNode.removeChild(this.parentNode);
-  itemsLeft();
-  saveChangeForLS();
-}
-// IMPROVE Only show one time the edit input, and also make a focus required.
-function btnEditTask(event) {
-  event.stopPropagation();
-  event.preventDefault();
-  let p = this.previousElementSibling;
-  p.classList.add("hidden");
-  //The way of create the input to change the task
-  let input = document.createElement(`input`);
-  input.type = "text";
-  input.value = p.innerHTML;
-  input.autofocus = true;
-  this.parentNode.classList.remove("task-done");
-  // BUG If the checkbox was marked. While You're editing the task, the check shows empty.
-  this.parentNode.insertBefore(input, this);
 
-  input.addEventListener("keypress", function (e) {
-    if (e.key === "Enter" && input.value != "") {
-      p.innerHTML = input.value;
-      p.classList.remove("hidden");
-      //After you press enter and insert the edit, the input will be remove
-      this.parentNode.removeChild(input);
-      this.parentNode.classList.add("task-done");
-      editing = false;
-    } else if (e.key === "Enter" && input.value === " ") {
-      // BUG If the input is empty, delete it.
-      btnDelete();
-    }
-    saveChangeForLS();
-  });
-}
 
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll(".pages p");
