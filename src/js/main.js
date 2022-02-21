@@ -224,12 +224,15 @@ document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("task") != null) {
     let uploadTask = JSON.parse(localStorage.getItem("task"));
     cacheTask = uploadTask;
-    for (let i = 0; i < uploadTask.length; i++) {
-      let task = uploadTask[i].value;
-      let taskDone = uploadTask[i].done;
-      newTask(task, taskDone, i);
-    }
-  } else if (localStorage.getItem("task") === null) {
-    alert("This app have a localStorage,create some task and test it.");
+  } else {
+    cacheTask = [
+      { value: "Complete Todo App on Frontend Mentor", done: false },
+      { value: "Pick up groceries", done: false },
+      { value: "Read for 1 hour", done: false },
+      { value: "10 minutes meditation", done: false },
+      { value: "Jog around the park 3x", done: false },
+      { value: "Complete online JavaScript course", done: true }
+    ]
   }
+  cacheTask.forEach(task => newTask(task.value, task.done))
 });
