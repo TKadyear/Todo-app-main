@@ -206,11 +206,7 @@ function drop(e) {
 
   saveChangeForLS();
 }
-window.addEventListener("resize", () => {
-  if (window.innerWidth <= 426) {
 
-  }
-}, { once: true })
 //Local Storage
 document.addEventListener("DOMContentLoaded", function () {
   if (localStorage.getItem("darkMode") === null) {
