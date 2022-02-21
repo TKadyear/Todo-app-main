@@ -185,6 +185,9 @@ function dragStart(e) {
   e.stopPropagation();
   e.dataTransfer.effectAllowed = "move";
   e.dataTransfer.setData("text/html", e.currentTarget.id);
+  setTimeout(() => {
+    e.target.classList.add('hidden');
+  }, 0);
 }
 
 function dragEnter(e) {
@@ -207,9 +210,12 @@ function drop(e) {
   e.currentTarget.classList.remove("drag-over");
   //get the draggable element
   const ID = e.dataTransfer.getData("text/html");
-  const DRAGGABLE = document.getElementById(ID);
+  const DRAGGABLE = document.querySelector(`#${ID}`);
   //add to the drop currentTarget but only insert the "task" before current target
-  e.currentTarget.parentNode.insertBefore(DRAGGABLE, this);
+  // e.currentTarget.parentNode.insertBefore(DRAGGABLE, this);
+  console.log(DRAGGABLE)
+  e.target.insertAdjacentElement("afterend", DRAGGABLE)
+  DRAGGABLE.classList.remove("hidden")
 
   saveChangeForLS();
 }
