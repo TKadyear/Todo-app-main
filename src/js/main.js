@@ -1,7 +1,3 @@
-//Add two variables with the values "task" and "-done" because it's a very repetitive
-//also prevent the errors if I need to change the name of the class
-const TASK = "task";
-const TASKDONE = "-done";
 let editing = false;
 let whichPageisActive = "all"
 //Toggle for dark mode
@@ -46,7 +42,6 @@ function itemsLeft() {
 
 //Function for create new tasks
 let todo = document.querySelector(".list");
-
 let randomNumber = (n = 0) => Math.floor(Math.random() * 500 + n);
 
 function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
@@ -133,7 +128,6 @@ inputForNewTask.addEventListener("keypress", (e) => {
   }
 });
 
-
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll(".pages p");
 pages.forEach((page) => page.addEventListener("click", () => {
@@ -157,10 +151,10 @@ function statusPages(page) {
 }
 //Button for Clear completed task
 let clearCompleted = document.getElementById("clear");
-clearCompleted.addEventListener("click", function () {
-  let taskCompleted = document.querySelectorAll(".task-done");
-  taskCompleted.forEach((tDone) => tDone.parentNode.removeChild(tDone));
-  saveChangeForLS();
+clearCompleted.addEventListener("click", () => {
+  cacheTask = cacheTask.filter(task => task.done === false)
+  statusPages(whichPageisActive);
+  saveLocalStorage();
 });
 //Drag and drop
 function dragAndDrop(task) {
