@@ -37,9 +37,8 @@ const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(cache
 
 //Dynamic number for items left
 function itemsLeft() {
-  let undoneTask = document.querySelectorAll(".task").length;
-  let changeStatusTask = document.querySelectorAll(".task-done").length;
-  let itemsLeft = undoneTask - changeStatusTask;
+  const doneTask = cacheTask.filter((task) => task.done === true)
+  const itemsLeft = cacheTask.length - doneTask.length;
   document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
 }
 
@@ -146,25 +145,6 @@ function statusPages(page) {
     listTask = listTask.filter((task) => task.done === done)
   }
   listTask.forEach(task => newTask(task.value, task.done))
-  // switch (page) {
-  //   case pages[0].textContent: //All
-  //     okTask.forEach((t) => t.classList.remove("hidden"));
-  //     allUndoneTask.forEach((t) => t.classList.remove("hidden"));
-  //     break;
-  //   case pages[1].textContent: //Active
-  //     allUndoneTask.forEach((t) => t.classList.remove("hidden"));
-  //     okTask.forEach((t) => t.classList.add("hidden"));
-  //     break;
-  //   case pages[2].textContent: //Completed
-  //     okTask.forEach((t) => t.classList.remove("hidden"));
-  //     allUndoneTask.forEach((t) => {
-  //       if (t.className.includes("done") === false) t.classList.add("hidden");
-  //     });
-  //     break;
-  //   default:
-  //     console.error("Not working..");
-  //     break;
-  // }
 }
 //Checkbox
 function btnCheckbox() {
