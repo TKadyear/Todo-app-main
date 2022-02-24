@@ -1,13 +1,14 @@
 let editing = false;
 let whichPageisActive = "all"
 //Toggle for dark mode
-let darkModeButton = document.querySelector("nav>img");
-darkModeButton.addEventListener("click", activeDarkMode);
+const darkModeBtn = document.querySelector("#btn-dark-mode");
+darkModeBtn.addEventListener("click", activeDarkMode);
 
 function activeDarkMode() {
   document.body.classList.toggle("dark-mode");
   const isDarkModeActive = document.body.classList.contains("dark-mode")
   localStorage.setItem("darkMode", `${isDarkModeActive}`);
+  const darkModeButton = document.querySelector("#btn-dark-mode > img");
   isDarkModeActive
     ? (darkModeButton.src = "./images/icon-sun.svg")
     : (darkModeButton.src = "./images/icon-moon.svg");
