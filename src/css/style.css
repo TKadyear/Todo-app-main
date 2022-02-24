@@ -367,6 +367,13 @@ body.dark-mode{
     margin: 0px 10px;
     padding: 9px;
   }
+  .drag-over::after {
+    background-image: linear-gradient(
+      315deg,
+      var(--violet) 0%,
+      var(--blue) 100%
+    );
+  }
 }
 
 .mobile {
