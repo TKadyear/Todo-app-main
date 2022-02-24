@@ -21,14 +21,14 @@ class ObjTask {
   }
 }
 //Functions for LocalStorage
-const saveChangeForLS = () => {
+const saveOrder = () => {
   let allTask = document.querySelectorAll(".task");
   cacheTask = [];
-  for (let i = allTask.length - 1; i >= 0; i--) {
-    let valueOfTask = allTask[i].textContent;
-    let statusOfTask = allTask[i].className.includes("done");
-    cacheTask.push(new ObjTask(valueOfTask, statusOfTask));
-  }
+  allTask.forEach(task => {
+    const nameTask = task.textContent
+    const isDone = task.className.includes("done")
+    cacheTask.push(new ObjTask(nameTask, isDone))
+  })
   saveLocalStorage();
 };
 const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(cacheTask));
@@ -116,7 +116,7 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
   content.appendChild(item);
   content.appendChild(iconEdit);
   content.appendChild(iconCross);
-  todo.insertBefore(content, todo.firstElementChild);
+  todo.insertAdjacentElement("beforeend", content)
 
   itemsLeft();
 }
@@ -205,7 +205,7 @@ function drop(e) {
   e.target.insertAdjacentElement("afterend", DRAGGABLE)
   DRAGGABLE.classList.remove("hidden")
 
-  saveChangeForLS();
+  saveOrder();
 }
 
 //Local Storage
@@ -218,13 +218,14 @@ document.addEventListener("DOMContentLoaded", function () {
     cacheTask = uploadTask;
   } else {
     cacheTask = [
-      { value: "Complete Todo App on Frontend Mentor", done: false },
-      { value: "Pick up groceries", done: false },
-      { value: "Read for 1 hour", done: false },
-      { value: "10 minutes meditation", done: false },
+      { value: "Complete online JavaScript course", done: true },
       { value: "Jog around the park 3x", done: false },
-      { value: "Complete online JavaScript course", done: true }
+      { value: "Read for 1 hour", done: false },
+      { value: "Pick up groceries", done: false },
+      { value: "10 minutes meditation", done: false },
+      { value: "Complete Todo App on Frontend Mentor", done: false }
     ]
   }
+  console.log(cacheTask)
   cacheTask.forEach(task => newTask(task.value, task.done))
 });
