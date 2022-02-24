@@ -57,6 +57,10 @@ function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
     content.classList.toggle("task-done");
     const index = cacheTask.findIndex(task => task.value === data)
     cacheTask[index].done = !cacheTask[index].done
+    const pageActive = document.querySelector(".active").textContent
+    if (pageActive != "All") {
+      statusPages()
+    }
     saveLocalStorage();
     itemsLeft();
   });
@@ -143,7 +147,7 @@ function statusPages() {
   const resetList = document.querySelector('ul.list')
   resetList.innerHTML = " ";
   let listTask = [...cacheTask];
-  if (page != "all") {
+  if (page != "All") {
     const done = (page === "Completed");
     listTask = listTask.filter((task) => task.done === done)
   }
