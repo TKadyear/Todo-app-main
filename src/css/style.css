@@ -48,6 +48,12 @@ body {
   margin: 0px 0px;
   height: auto;
 }
+.sr-only{
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  visibility: hidden;
+}
 #background{
   position: absolute;
   background: url(../images/bg-desktop-light.jpg) no-repeat;
@@ -67,10 +73,14 @@ nav {
   align-items: center;
 }
 #btn-dark-mode{
-  background: none;
+  width: 26px;
+  height: 26px;
+  background:url(../images/icon-moon.svg) no-repeat;
   border: 0;
+  position: relative;
   cursor: pointer;
 }
+
 
 h1 {
   cursor: default;
@@ -165,7 +175,11 @@ body .container .content .checkbox:hover {
   visibility: hidden;
   width: 18px;
   margin: 0 5px;
-  cursor: pointer;
+}
+.task button {
+    background: none;
+    border: 0;
+    cursor: pointer;
 }
 .task > p:hover {
   cursor: move;
@@ -282,6 +296,9 @@ body.dark-mode{
 
   #background{
     background: url(../images/bg-desktop-dark.jpg) var(--bg-dark) no-repeat;
+  }
+  #btn-dark-mode{
+    background:url(../images/icon-sun.svg) no-repeat ;
   }
   p {
     color: var(--divider);

@@ -7,10 +7,6 @@ function activeDarkMode() {
   document.body.classList.toggle("dark-mode");
   const isDarkModeActive = document.body.classList.contains("dark-mode")
   localStorage.setItem("darkMode", `${isDarkModeActive}`);
-  const darkModeButton = document.querySelector("#btn-dark-mode > img");
-  isDarkModeActive
-    ? (darkModeButton.src = "./images/icon-sun.svg")
-    : (darkModeButton.src = "./images/icon-moon.svg");
 }
 //Variables for LocalStorage
 let cacheTask = [];
@@ -238,11 +234,6 @@ function responsiveToolsBar() {
   }
   addEventPages();
 }
-window.addEventListener("resize", () => {
-  if (window.innerWidth > 426) {
-    console.log(document.querySelector(".style-list").contains(".tools"))
-  }
-})
 
 //Local Storage
 document.addEventListener("DOMContentLoaded", function () {
