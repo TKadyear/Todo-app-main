@@ -1,5 +1,4 @@
 let editing = false;
-let whichPageisActive = "all"
 //Toggle for dark mode
 const darkModeBtn = document.querySelector("#btn-dark-mode");
 darkModeBtn.addEventListener("click", activeDarkMode);
@@ -132,15 +131,15 @@ inputForNewTask.addEventListener("keypress", (e) => {
 //Navigation for All task, active and completed
 let pages = document.querySelectorAll(".pages p");
 pages.forEach((page) => page.addEventListener("click", () => {
-  pages.forEach((p) => p.classList.remove("active"));
-  whichPageisActive = page.innerText;
+  document.querySelector(".active").classList.remove("active")
   page.classList.add("active");
-  statusPages(page.innerText);
+  statusPages();
 })
 );
 // TODO While page "active" is selected,if a task is done.Make a refresh for the page.
 
-function statusPages(page) {
+function statusPages() {
+  const page = document.querySelector(".active").textContent
   const resetList = document.querySelector('ul.list')
   resetList.innerHTML = " ";
   let listTask = [...cacheTask];
@@ -154,7 +153,7 @@ function statusPages(page) {
 let clearCompleted = document.getElementById("clear");
 clearCompleted.addEventListener("click", () => {
   cacheTask = cacheTask.filter(task => task.done === false)
-  statusPages(whichPageisActive);
+  statusPages();
   saveLocalStorage();
 });
 //Drag and drop
