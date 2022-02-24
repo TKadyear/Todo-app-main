@@ -1,16 +1,16 @@
 let editing = false;
 let whichPageisActive = "all"
 //Toggle for dark mode
-let themeButton = document.querySelector("nav>img");
-let darkMode = false;
-themeButton.addEventListener("click", theme);
-function theme() {
+let darkModeButton = document.querySelector("nav>img");
+darkModeButton.addEventListener("click", activeDarkMode);
+
+function activeDarkMode() {
   document.body.classList.toggle("dark-mode");
-  darkMode = !darkMode;
-  localStorage.setItem("darkMode", `${darkMode}`);
-  darkMode
-    ? (themeButton.src = "./images/icon-sun.svg")
-    : (themeButton.src = "./images/icon-moon.svg");
+  const isDarkModeActive = document.body.classList.contains("dark-mode")
+  localStorage.setItem("darkMode", `${isDarkModeActive}`);
+  isDarkModeActive
+    ? (darkModeButton.src = "./images/icon-sun.svg")
+    : (darkModeButton.src = "./images/icon-moon.svg");
 }
 //Variables for LocalStorage
 let cacheTask = [];
@@ -206,11 +206,8 @@ function drop(e) {
 
 //Local Storage
 document.addEventListener("DOMContentLoaded", function () {
-  if (localStorage.getItem("darkMode") === null) {
-    localStorage.setItem("darkMode", "false");
-  }
   if (localStorage.getItem("darkMode") === "true") {
-    theme();
+    activeDarkMode();
   }
   if (localStorage.getItem("task") != null) {
     let uploadTask = JSON.parse(localStorage.getItem("task"));
