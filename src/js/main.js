@@ -35,9 +35,11 @@ const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(cache
 
 //Dynamic number for items left
 function itemsLeft() {
-  const doneTask = cacheTask.filter((task) => task.done === true)
-  const itemsLeft = cacheTask.length - doneTask.length;
-  document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
+  if (document.querySelector("#itemsLeft")) {
+    const doneTask = cacheTask.filter((task) => task.done === true)
+    const itemsLeft = cacheTask.length - doneTask.length;
+    document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
+  }
 }
 
 //Function for create new tasks
@@ -133,13 +135,14 @@ inputForNewTask.addEventListener("keypress", (e) => {
 });
 
 //Navigation for All task, active and completed
-let pages = document.querySelectorAll(".pages p");
-pages.forEach((page) => page.addEventListener("click", () => {
-  document.querySelector(".active").classList.remove("active")
-  page.classList.add("active");
-  statusPages();
-})
-);
+function addEventPages() {
+  let pages = document.querySelectorAll(".pages p");
+  pages.forEach((page) => page.addEventListener("click", () => {
+    document.querySelector(".active").classList.remove("active")
+    page.classList.add("active");
+    statusPages();
+  }));
+}
 // TODO While page "active" is selected,if a task is done.Make a refresh for the page.
 
 function statusPages() {
@@ -153,13 +156,7 @@ function statusPages() {
   }
   listTask.forEach(task => newTask(task.value, task.done))
 }
-//Button for Clear completed task
-let clearCompleted = document.getElementById("clear");
-clearCompleted.addEventListener("click", () => {
-  cacheTask = cacheTask.filter(task => task.done === false)
-  statusPages();
-  saveLocalStorage();
-});
+
 //Drag and drop
 function dragAndDrop(task) {
   task.addEventListener("dragstart", dragStart);
@@ -208,8 +205,48 @@ function drop(e) {
   saveOrder();
 }
 
+function responsiveToolsBar() {
+  const container = document.querySelector(".style-list");
+  const templateDesktop = /*html*/
+    `<div class="tools">
+    <p id="itemsLeft"></p>
+    <div class="pages">
+      <p class="active">All</p>
+      <p class>Active</p>
+      <p class>Completed</p>
+    </div>
+    <p id="clear">Clear Completed</p>
+  </div>`
+  const templateMobile = /*html*/
+    `<div class="style-list tools pages">
+      <p class="active">All</p>
+      <p class>Active</p>
+      <p class>Completed</p>
+    </div>`
+  if (window.innerWidth > 620) {
+    container.insertAdjacentHTML("beforeend", templateDesktop)
+    //Button for Clear completed task
+    let clearCompleted = document.getElementById("clear");
+    clearCompleted.addEventListener("click", () => {
+      cacheTask = cacheTask.filter(task => task.done === false)
+      statusPages();
+      saveLocalStorage();
+    });
+
+  } else {
+    container.insertAdjacentHTML("afterend", templateMobile)
+  }
+  addEventPages();
+}
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 426) {
+    console.log(document.querySelector(".style-list").contains(".tools"))
+  }
+})
+
 //Local Storage
 document.addEventListener("DOMContentLoaded", function () {
+  responsiveToolsBar()
   if (localStorage.getItem("darkMode") === "true") {
     activeDarkMode();
   }
@@ -226,6 +263,5 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: "Complete Todo App on Frontend Mentor", done: false }
     ]
   }
-  console.log(cacheTask)
   cacheTask.forEach(task => newTask(task.value, task.done))
 });
