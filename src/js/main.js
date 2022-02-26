@@ -1,4 +1,4 @@
-let editing = false;
+import { dragStart, dragEnter, dragOver, dragLeave, drop } from "./drag-and-drop.js"
 //Toggle for dark mode
 const darkModeBtn = document.querySelector("#btn-dark-mode");
 darkModeBtn.addEventListener("click", activeDarkMode);
@@ -9,122 +9,143 @@ function activeDarkMode() {
   localStorage.setItem("darkMode", `${isDarkModeActive}`);
 }
 //Variables for LocalStorage
-let cacheTask = [];
+let listTask = []; //Se tiene que ver como tratarlo para poder modificar el valor según se trabaja en ello.
 class ObjTask {
   constructor(value, done = false) {
     this.value = value;
     this.done = done;
   }
 }
-//Functions for LocalStorage
 const saveOrder = () => {
-  let allTask = document.querySelectorAll(".task");
-  cacheTask = [];
-  allTask.forEach(task => {
-    const nameTask = task.textContent
-    const isDone = task.className.includes("done")
-    cacheTask.push(new ObjTask(nameTask, isDone))
+  const allTask = document.querySelectorAll("input[type=checkbox]");
+  listTask = [];
+  allTask.forEach((task, index) => {
+    if (index != 0) {
+      const nameTask = task.value;
+      const isDone = task.checked;
+      listTask.push(new ObjTask(nameTask, isDone));
+    }
   })
   saveLocalStorage();
 };
-const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(cacheTask));
+const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(listTask));
 
 //Dynamic number for items left
 function itemsLeft() {
   if (document.querySelector("#itemsLeft")) {
-    const doneTask = cacheTask.filter((task) => task.done === true)
-    const itemsLeft = cacheTask.length - doneTask.length;
+    const doneTask = listTask.filter(task => task.done)
+    const itemsLeft = listTask.length - doneTask.length;
     document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
   }
 }
-
 //Function for create new tasks
-let todo = document.querySelector(".list");
 let randomNumber = (n = 0) => Math.floor(Math.random() * 500 + n);
 
-function newTask(data, done = false, i = randomNumber(cacheTask.length)) {
-  let content = document.createElement("li");
-  content.className = "task";
-  if (done === true) content.classList.add("task-done");
-  content.id = "task-" + i;
-  content.draggable = true;
-  dragAndDrop(content);
-  let checkbox = document.createElement("div");
-  checkbox.className = "checkbox";
-  checkbox.addEventListener("click", () => {
-    content.classList.toggle("task-done");
-    const index = cacheTask.findIndex(task => task.value === data)
-    cacheTask[index].done = !cacheTask[index].done
-    const pageActive = document.querySelector(".active").textContent
-    if (pageActive != "All") {
-      statusPages()
-    }
-    saveLocalStorage();
-    itemsLeft();
-  });
+function newTask(data, done = false, i = randomNumber(listTask.length)) {
+  const todo = document.querySelector(".list");
+  const template = /* html */`
+  <li class="task" id=${"task-" + i} draggable="true" tabindex="0">
+  <input type="checkbox" value="${data}">
+  <label for="${data}">${data}</label>
+    <button class="edit"><img src="./images/icon-edit.svg" alt="Button for edit the task"></button>
+    <button class="delete"><img  src="./images/icon-cross.svg" alt="Button for remove the task"></button>
+  </li>
+  `
+  const range = document.createRange();
+  const DocumentTemplate = range.createContextualFragment(template);
+  const checkbox = DocumentTemplate.querySelector("input[type=checkbox]");
+  checkbox.checked = done;
+  const label = DocumentTemplate.querySelector("li >label");
+  done ? label.classList.add("task-done") : label.classList.remove("task-done");
 
-  let item = document.createElement("p");
-  item.textContent = data;
-
-  let iconEdit = document.createElement("img");
-  iconEdit.className = "edit";
-  iconEdit.src = "./images/icon-edit.svg";
-  iconEdit.addEventListener("click", () => {
-    if (!editing) {
-      editing = true;
-      item.classList.add("hidden")
-      //The way of create the input to change the task
-      let input = document.createElement(`input`);
-      input.type = "text";
-      input.value = data;
-      input.autofocus = true;
-      content.classList.remove("task-done");
-      // BUG If the checkbox was marked. While You're editing the task, the check shows empty.
-      item.insertAdjacentElement("beforebegin", input);
-      /*  BUG
-       ! main.js:64 Uncaught TypeError: Cannot read properties of undefined (reading 'done')
-       ! at HTMLDivElement.<anonymous
-       */
-      input.addEventListener("keypress", function (e) {
-        if (e.key === "Enter") {
-          item.innerHTML = input.value;
-          item.classList.remove("hidden");
-          //After you press enter and insert the edit, the input will be remove
-          content.removeChild(input);
-          content.classList.add("task-done");
-          const index = cacheTask.findIndex(task => task.value === data)
-          cacheTask[index].value = input.value
-        }
-        editing = false;
-        saveLocalStorage();
-      });
-    }
-  })
-  let iconCross = document.createElement("img");
-  iconCross.className = "delete";
-  iconCross.src = "./images/icon-cross.svg";
-  iconCross.addEventListener("click", () => {
-    content.remove();
-    cacheTask = cacheTask.filter(task => task.value != data);
-    saveLocalStorage();
-    itemsLeft();
-  });
-
-  content.appendChild(checkbox);
-  content.appendChild(item);
-  content.appendChild(iconEdit);
-  content.appendChild(iconCross);
-  todo.insertAdjacentElement("beforeend", content)
-
+  addEventListenerForEachTask(DocumentTemplate, data);
+  todo.appendChild(DocumentTemplate);
   itemsLeft();
 }
+// TODO While page "active" is selected,if a task is done.Make a refresh for the page.
+
+function statusPages() {
+  const page = document.querySelector(".active").textContent
+  const resetList = document.querySelector('ul.list')
+  resetList.innerHTML = " ";
+  let listTaskTemporal = [...listTask];
+  if (page != "All") {
+    const done = (page === "Completed");
+    listTaskTemporal = listTask.filter((task) => task.done === done)
+  }
+  listTaskTemporal.forEach(task => newTask(task.value, task.done))
+}
+
+
+function addEventListenerForEachTask(template, data) {
+  const task = template.querySelector("li");
+  const checkbox = template.querySelector("input[type=checkbox]");
+  const removeBtn = template.querySelector("button.delete");
+  const editBtn = template.querySelector("button.edit");
+  const label = template.querySelector("li >label");
+  // ? Checkbox
+  checkbox.addEventListener("change", () => {
+    if (checkbox.type === 'checkbox') {
+      const index = listTask.findIndex(task => task.value === data);
+      listTask[index].done = !listTask[index].done;
+      listTask[index].done ? label.classList.add("task-done") : label.classList.remove("task-done");
+      statusPages();
+      saveLocalStorage();
+      itemsLeft();
+    }
+  });
+  // ? Edit button
+  editBtn.addEventListener("click", (e) => {
+    if (checkbox.type === 'checkbox') {
+      e.stopPropagation();
+      label.classList.add("hidden");
+      checkbox.type = 'text';
+      checkbox.focus();
+      window.addEventListener("click", (pointer) => {
+        if (pointer.target != checkbox) {
+          checkbox.type = 'checkbox';
+          label.classList.remove("hidden");
+        }
+      }, { once: true })
+    }
+  })
+  checkbox.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      const editValue = checkbox.value;
+      label.innerText = editValue;
+      checkbox.type = 'checkbox';
+      checkbox.value = editValue;
+      label.classList.remove("hidden");
+      const index = listTask.findIndex(task => task.value === data);
+      listTask[index].value = editValue;
+      saveLocalStorage();
+    }
+  })
+  // ? Remove Button
+  removeBtn.addEventListener("click", () => {
+    task.remove();
+    listTask = listTask.filter(task => task.value != data);
+    saveLocalStorage();
+    itemsLeft();
+  });
+  // ? Drag and Drop
+  task.addEventListener("dragstart", dragStart);
+  task.addEventListener("dragenter", dragEnter);
+  task.addEventListener("dragover", dragOver);
+  task.addEventListener("dragleave", dragLeave);
+  task.addEventListener("drop", (e) => {
+    drop(e);
+    saveOrder();
+  });
+}
+
 const inputForNewTask = document.getElementById("todo");
 //The input which add new task to the list
 inputForNewTask.addEventListener("keypress", (e) => {
   const task = inputForNewTask.value;
   if (e.key === "Enter" && task != "") {
     newTask(task);
-    cacheTask.push(new ObjTask(task));
+    listTask.push(new ObjTask(task));
     saveLocalStorage();
     inputForNewTask.value = "";
   }
@@ -138,61 +159,6 @@ function addEventPages() {
     page.classList.add("active");
     statusPages();
   }));
-}
-// TODO While page "active" is selected,if a task is done.Make a refresh for the page.
-
-function statusPages() {
-  const page = document.querySelector(".active").textContent
-  const resetList = document.querySelector('ul.list')
-  resetList.innerHTML = " ";
-  let listTask = [...cacheTask];
-  if (page != "All") {
-    const done = (page === "Completed");
-    listTask = listTask.filter((task) => task.done === done)
-  }
-  listTask.forEach(task => newTask(task.value, task.done))
-}
-
-//Drag and drop
-function dragAndDrop(task) {
-  task.addEventListener("dragstart", dragStart);
-  task.addEventListener("dragenter", dragEnter);
-  task.addEventListener("dragover", dragOver);
-  task.addEventListener("dragleave", dragLeave);
-  task.addEventListener("drop", drop);
-}
-
-function dragStart(e) {
-  e.stopPropagation();
-  e.dataTransfer.effectAllowed = "move";
-  e.dataTransfer.setData("text/html", e.currentTarget.id);
-}
-
-function dragEnter(e) {
-  e.preventDefault();
-  e.stopPropagation();
-
-  e.currentTarget.classList.add("drag-over");
-}
-function dragOver(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  e.currentTarget.classList.add("drag-over");
-}
-function dragLeave(e) {
-  e.preventDefault();
-  e.stopPropagation();
-  e.currentTarget.classList.remove("drag-over");
-}
-function drop(e) {
-  e.currentTarget.classList.remove("drag-over");
-  //get the draggable element
-  const ID = e.dataTransfer.getData("text/html");
-  const DRAGGABLE = document.querySelector(`#${ID}`);
-  //get the drop area
-  const DROP = document.querySelector(`#${e.currentTarget.id}`)
-  DROP.insertAdjacentElement("afterend", DRAGGABLE)
-  saveOrder();
 }
 
 function responsiveToolsBar() {
@@ -213,12 +179,12 @@ function responsiveToolsBar() {
       <p class>Active</p>
       <p class>Completed</p>
     </div>`
-  if (window.innerWidth > 620) {
+  if (window.innerWidth > 769) {
     container.insertAdjacentHTML("beforeend", templateDesktop)
     //Button for Clear completed task
     let clearCompleted = document.getElementById("clear");
     clearCompleted.addEventListener("click", () => {
-      cacheTask = cacheTask.filter(task => task.done === false)
+      listTask = listTask.filter(task => task.done === false);
       statusPages();
       saveLocalStorage();
     });
@@ -228,18 +194,30 @@ function responsiveToolsBar() {
   }
   addEventPages();
 }
+window.addEventListener("resize", () => {
+  const isActiveMobile = document.querySelector(".tools").classList.contains("style-list");
+  if (window.innerWidth > 769 && isActiveMobile) {
+    document.querySelector(".tools").remove();
+    responsiveToolsBar();
+  }
+  if (window.innerWidth < 769 && !isActiveMobile) {
+    document.querySelector(".tools").remove();
+    responsiveToolsBar();
+  }
+  itemsLeft();
+})
 
 //Local Storage
-document.addEventListener("DOMContentLoaded", function () {
-  responsiveToolsBar()
+document.addEventListener("DOMContentLoaded", () => {
+  responsiveToolsBar();
   if (localStorage.getItem("darkMode") === "true") {
     activeDarkMode();
   }
   if (localStorage.getItem("task") != null) {
     let uploadTask = JSON.parse(localStorage.getItem("task"));
-    cacheTask = uploadTask;
+    listTask = uploadTask;
   } else {
-    cacheTask = [
+    listTask = [
       { value: "Complete online JavaScript course", done: true },
       { value: "Jog around the park 3x", done: false },
       { value: "Read for 1 hour", done: false },
@@ -248,5 +226,5 @@ document.addEventListener("DOMContentLoaded", function () {
       { value: "Complete Todo App on Frontend Mentor", done: false }
     ]
   }
-  cacheTask.forEach(task => newTask(task.value, task.done))
+  listTask.forEach(task => newTask(task.value, task.done))
 });
