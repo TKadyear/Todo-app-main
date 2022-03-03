@@ -128,10 +128,15 @@ function addEventListenerForEachTask(template, data) {
   });
   // ? Drag and Drop
   task.addEventListener("dragstart", dragStart);
+  task.addEventListener("touchmove", dragStart);
   task.addEventListener("dragenter", dragEnter);
   task.addEventListener("dragover", dragOver);
   task.addEventListener("dragleave", dragLeave);
   task.addEventListener("drop", (e) => {
+    drop(e);
+    saveOrder();
+  });
+  task.addEventListener("touchend", (e) => {
     drop(e);
     saveOrder();
   });
