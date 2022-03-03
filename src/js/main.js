@@ -5,9 +5,10 @@ darkModeBtn.addEventListener("click", activeDarkMode);
 
 function activeDarkMode() {
   document.body.classList.toggle("dark-mode");
-  const isDarkModeActive = document.body.classList.contains("dark-mode")
+  const isDarkModeActive = document.body.classList.contains("dark-mode");
   localStorage.setItem("darkMode", `${isDarkModeActive}`);
 }
+
 //Variables for LocalStorage
 let listTask = []; //Se tiene que ver como tratarlo para poder modificar el valor según se trabaja en ello.
 class ObjTask {
@@ -32,11 +33,9 @@ const saveLocalStorage = () => localStorage.setItem("task", JSON.stringify(listT
 
 //Dynamic number for items left
 function itemsLeft() {
-  if (document.querySelector("#itemsLeft")) {
-    const doneTask = listTask.filter(task => task.done)
-    const itemsLeft = listTask.length - doneTask.length;
-    document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
-  }
+  const doneTask = listTask.filter(task => task.done)
+  const itemsLeft = listTask.length - doneTask.length;
+  document.querySelector("#itemsLeft").innerHTML = `${itemsLeft} items left`;
 }
 //Function for create new tasks
 let randomNumber = (n = 0) => Math.floor(Math.random() * 500 + n);
@@ -62,7 +61,6 @@ function newTask(data, done = false, i = randomNumber(listTask.length)) {
   todo.appendChild(DocumentTemplate);
   itemsLeft();
 }
-// TODO While page "active" is selected,if a task is done.Make a refresh for the page.
 
 function statusPages() {
   const page = document.querySelector(".active").textContent
@@ -152,64 +150,21 @@ inputForNewTask.addEventListener("keypress", (e) => {
 });
 
 //Navigation for All task, active and completed
-function addEventPages() {
-  let pages = document.querySelectorAll(".pages p");
-  pages.forEach((page) => page.addEventListener("click", () => {
-    document.querySelector(".active").classList.remove("active")
-    page.classList.add("active");
-    statusPages();
-  }));
-}
-
-function responsiveToolsBar() {
-  const container = document.querySelector(".style-list");
-  const templateDesktop = /*html*/
-    `<div class="tools">
-    <p id="itemsLeft"></p>
-    <div class="pages">
-      <p class="active">All</p>
-      <p class>Active</p>
-      <p class>Completed</p>
-    </div>
-    <p id="clear">Clear Completed</p>
-  </div>`
-  const templateMobile = /*html*/
-    `<div class="style-list tools pages">
-      <p class="active">All</p>
-      <p class>Active</p>
-      <p class>Completed</p>
-    </div>`
-  if (window.innerWidth > 769) {
-    container.insertAdjacentHTML("beforeend", templateDesktop)
-    //Button for Clear completed task
-    let clearCompleted = document.getElementById("clear");
-    clearCompleted.addEventListener("click", () => {
-      listTask = listTask.filter(task => task.done === false);
-      statusPages();
-      saveLocalStorage();
-    });
-
-  } else {
-    container.insertAdjacentHTML("afterend", templateMobile)
-  }
-  addEventPages();
-}
-window.addEventListener("resize", () => {
-  const isActiveMobile = document.querySelector(".tools").classList.contains("style-list");
-  if (window.innerWidth > 769 && isActiveMobile) {
-    document.querySelector(".tools").remove();
-    responsiveToolsBar();
-  }
-  if (window.innerWidth < 769 && !isActiveMobile) {
-    document.querySelector(".tools").remove();
-    responsiveToolsBar();
-  }
-  itemsLeft();
-})
+const pages = document.querySelectorAll(".pages p");
+pages.forEach((page) => page.addEventListener("click", () => {
+  pages.forEach(activepage => (activepage.textContent === page.textContent) ? activepage.classList.add("active") : activepage.classList.remove("active"))
+  statusPages();
+}));
+//Button for Clear completed task
+const clearCompleted = document.getElementById("clear");
+clearCompleted.addEventListener("click", () => {
+  listTask = listTask.filter(task => task.done === false);
+  statusPages();
+  saveLocalStorage();
+});
 
 //Local Storage
 document.addEventListener("DOMContentLoaded", () => {
-  responsiveToolsBar();
   if (localStorage.getItem("darkMode") === "true") {
     activeDarkMode();
   }
