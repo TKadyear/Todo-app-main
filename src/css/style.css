@@ -1,6 +1,7 @@
+/* @import 'node_modules/dragula/dragula'; */
 @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@400;700&display=swap");
 * {
-  box-sizing: border-box;
+  /* box-sizing: border-box; */
   font-family: "Josefin Sans", sans-serif;
   font-size: 18px;
 }
@@ -58,12 +59,18 @@ li> input[type="text"]{
   position: absolute;
   width: 1px;
   height: 1px;
-  visibility: hidden;
+  display: none;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
 }
 /*Structure of the website without the elements those will change in dark mode*/
 body {
   margin: 0px 0px;
   height: auto;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 input[type=checkbox] {
@@ -98,10 +105,6 @@ input[type=checkbox]:checked:after {
   height: 50vh;
   width: 100%;
 }
-.container {
-  z-index: 1;
-  position: relative;
-}
 
 nav {
   display: flex;
@@ -134,10 +137,9 @@ h1 {
   display:flex;
   flex-direction: column;
   gap:1em;
-  min-width: 300px;
-  max-width: 750px;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 65%;
+  z-index: 1;
+
 }
 
 .task,
@@ -182,10 +184,10 @@ h1 {
 }
 .task button {
   visibility: hidden;
-    background: none;
-    width: min-content;
-    border: 0;
-    cursor: pointer;
+  background: none;
+  width: min-content;
+  border: 0;
+  cursor: pointer;
 }
 .task > p:hover {
   cursor: move;
@@ -198,6 +200,7 @@ h1 {
 
 li > label{
   width: -webkit-fill-available;
+  width: -moz-fill-available;
   flex-shrink: 20;
 }
 .tools,
@@ -277,8 +280,8 @@ body.dark-mode{
   }
   .style-list {
     background: var(--content-bg-dark);
-   -webkit-box-shadow: 0px 6px 16px -2px var(--bg-dark);
-    box-shadow: 0px 6px 16px -2px var(--bg-dark);
+   -webkit-box-shadow: 0px 6px 16px 2px var(--bg-dark);
+    box-shadow: 0px 6px 16px 2px var(--bg-dark);
   }
   .task-done  {
     color: var(--active-state);
@@ -335,12 +338,31 @@ body.dark-mode{
     background-size: cover;
     background-position: center;
     height: 30vh;
+
   }
   .content {
-    max-width: 75%;
+    width: 75%;
+
   }
   .task button {
     visibility: visible;
+  }
+  /* Last separador*/
+  .task:last-child::after,body.dark-mode .task:last-child::after {
+    height: 0px;
+    left: 0;
+    bottom: 0;
+    background:none;
+  }
+  #desktop-pagebar{
+    display: none;
+  }
+  #mobile-pagebar{
+    display:flex;
+    /* position: static; */
+    /* overflow: visible; */
+    /* clip: auto; */
+    /* white-space: normal;*/
   }
 }
 @media only screen and (max-width: 426px) {
@@ -349,8 +371,7 @@ body.dark-mode{
     background-position: center;
   }
   .content {
-    min-width: 200px;
-    max-width: 300px;
+    width: 90%;
   }
   h1 {
     font-size: 1.5em;
@@ -362,23 +383,6 @@ body.dark-mode{
   }
   .tools {
     justify-content: space-evenly;
-  }
-   /* Last separador*/
-   .task:last-child::after,body.dark-mode .task:last-child::after {
-    height: 0px;
-    left: 0;
-    bottom: 0;
-    background:none;
-  }
-
-  #desktop-pagebar{
-    display: none;
-  }
-  #mobile-pagebar{
-    display:flex;
-    /* position: static; */
-    /* overflow: visible; */
-    /* clip: auto; */
-    /* white-space: normal;*/
+    padding: 20px 10px;
   }
 }
