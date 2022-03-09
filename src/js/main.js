@@ -133,13 +133,17 @@ function addEventListenerForEachTask(template, data) {
   task.addEventListener("dragover", dragOver);
   task.addEventListener("dragleave", dragLeave);
   task.addEventListener("drop", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     drop(e);
     saveOrder();
   });
 
-  task.addEventListener("touchstart", (e) => touchStart(e, task));
-  task.addEventListener("touchmove", (e) => touchMove(e, task));
-  task.addEventListener("touchend", (e) => {
+  label.addEventListener("touchstart", (e) => touchStart(e, task));
+  label.addEventListener("touchmove", (e) => touchMove(e, task));
+  label.addEventListener("touchend", (e) => {
+    e.stopPropagation();
+    e.preventDefault();
     touchEnd(e, task);
     saveOrder();
   });
