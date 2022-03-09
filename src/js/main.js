@@ -137,16 +137,10 @@ function addEventListenerForEachTask(template, data) {
     saveOrder();
   });
 
-  task.addEventListener("touchstart", touchStart);
-  task.addEventListener("touchmove", (e) => {
-    const touch = e.changedTouches[0]
-    task.style.left = touch.clientX + "px"
-    task.style.top = touch.clientY + "px"
-  });
+  task.addEventListener("touchstart", (e) => touchStart(e, task));
+  task.addEventListener("touchmove", (e) => touchMove(e, task));
   task.addEventListener("touchend", (e) => {
-    task.style.left = 0 + "px"
-    task.style.top = 0 + "px"
-    touchEnd(e)
+    touchEnd(e, task);
     saveOrder();
   });
 }

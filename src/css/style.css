@@ -176,19 +176,14 @@ h1 {
     var(--blue) 100%
   );
 }
-.gu-mirror {
+.touch {
   position: fixed !important;
   margin: 0 !important;
   z-index: 9999 !important;
+  background: var(--white);
   opacity: 0.8;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=80)";
-  /* filter: alpha(opacity=80); */
 }
-.gu-transit {
-  opacity: 0.2;
-  -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
-  /* filter: alpha(opacity=20); */
-}
+
 .task:hover button {
   visibility: visible;
 }
@@ -330,6 +325,9 @@ body.dark-mode{
       var(--violet) 0%,
       var(--blue) 100%
     );
+  }
+  .touch {
+    background: var(--content-bg-dark);
   }
 }
 #mobile-pagebar{
