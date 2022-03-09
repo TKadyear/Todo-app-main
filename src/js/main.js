@@ -1,4 +1,5 @@
 import { dragStart, dragEnter, dragOver, dragLeave, drop } from "./drag-and-drop.js"
+import { touchStart, touchMove, touchEnd } from "./touch-move.js"
 //Toggle for dark mode
 const darkModeBtn = document.querySelector("#btn-dark-mode");
 darkModeBtn.addEventListener("click", activeDarkMode);
@@ -128,7 +129,6 @@ function addEventListenerForEachTask(template, data) {
   });
   // ? Drag and Drop
   task.addEventListener("dragstart", dragStart);
-  task.addEventListener("touchmove", dragStart);
   task.addEventListener("dragenter", dragEnter);
   task.addEventListener("dragover", dragOver);
   task.addEventListener("dragleave", dragLeave);
@@ -136,8 +136,17 @@ function addEventListenerForEachTask(template, data) {
     drop(e);
     saveOrder();
   });
+
+  task.addEventListener("touchstart", touchStart);
+  task.addEventListener("touchmove", (e) => {
+    const touch = e.changedTouches[0]
+    task.style.left = touch.clientX + "px"
+    task.style.top = touch.clientY + "px"
+  });
   task.addEventListener("touchend", (e) => {
-    drop(e);
+    task.style.left = 0 + "px"
+    task.style.top = 0 + "px"
+    touchEnd(e)
     saveOrder();
   });
 }
