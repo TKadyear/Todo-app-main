@@ -9,11 +9,8 @@ This is a solution to the [Todo app challenge on Frontend Mentor](https://www.fr
     - [Clone this repository](#clone-this-repository)
   - [My process](#my-process)
     - [Built with](#built-with)
-    - [What I learned](#what-i-learned)
-    - [Continued development](#continued-development)
     - [Useful resources](#useful-resources)
   - [Author](#author)
-
 ## Overview
 ![](./design/todo.png)
 ### The challenge
@@ -73,28 +70,7 @@ $ npm run preview
 - Drag and Drop API
 
 
-### What I learned
 
-
-```js
-  const template = /* html */`
-  <li class="task" id=${"task-" + i} draggable="true" tabindex="0">
-  <input type="checkbox" value="${data}">
-  <label for="${data}">${data}</label>
-    <button class="edit"><img src="./images/icon-edit.svg" alt="Button for edit the task"></button>
-    <button class="delete"><img  src="./images/icon-cross.svg" alt="Button for remove the task"></button>
-  </li>
-  `
-  const range = document.createRange();
-  const DocumentTemplate = range.createContextualFragment(template);
-```
-
-
-
-
-### Continued development
-
-Use this section to outline areas that you want to continue focusing on in future projects. These could be concepts you're still not completely comfortable with or techniques you found useful that you want to refine and perfect.
 
 ### Useful resources
 
@@ -103,8 +79,8 @@ Use this section to outline areas that you want to continue focusing on in futur
 
 
 ## Author
-- Github - [Tamara Kadyear](https://github.com/TKadyear)
-- Frontend Mentor - [Tamara Kadyear](https://www.frontendmentor.io/profile/)
+- Github - [Tamara Kadyear | TKadyear](https://github.com/TKadyear)
+- Frontend Mentor - [Tamara Kadyearr | TKadyear](https://www.frontendmentor.io/profile/TKadyear)
 
 
 
